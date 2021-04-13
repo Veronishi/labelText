@@ -7,10 +7,10 @@ import os.path as osp
 import PIL.Image
 
 from labelme import __version__
-from logger import logger
+from labelme.logger import logger
 from labelme import PY2
 from labelme import QT4
-import utils
+from labelme import utils
 
 
 PIL.Image.MAX_IMAGE_PIXELS = None

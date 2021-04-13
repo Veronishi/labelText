@@ -3,8 +3,8 @@ from qtpy import QtGui
 from qtpy import QtWidgets
 
 from labelme import QT5
-from shape import Shape
-import utils
+from labelme.shape import Shape
+import labelme.utils
 
 
 # TODO(unknown):

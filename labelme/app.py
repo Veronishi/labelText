@@ -17,20 +17,20 @@ from labelme import __appname__
 from labelme import PY2
 from labelme import QT5
 
-import utils
-from config import get_config
-from label_file import LabelFile
-from label_file import LabelFileError
-from logger import logger
-from shape import Shape
-from widgets import BrightnessContrastDialog
-from widgets import Canvas
-from widgets import LabelDialog
-from widgets import LabelListWidget
-from widgets import LabelListWidgetItem
-from widgets import ToolBar
-from widgets import UniqueLabelQListWidget
-from widgets import ZoomWidget
+from . import utils
+from labelme.config import get_config
+from labelme.label_file import LabelFile
+from labelme.label_file import LabelFileError
+from labelme.logger import logger
+from labelme.shape import Shape
+from labelme.widgets import BrightnessContrastDialog
+from labelme.widgets import Canvas
+from labelme.widgets import LabelDialog
+from labelme.widgets import LabelListWidget
+from labelme.widgets import LabelListWidgetItem
+from labelme.widgets import ToolBar
+from labelme.widgets import UniqueLabelQListWidget
+from labelme.widgets import ZoomWidget
 
 
 # FIXME
