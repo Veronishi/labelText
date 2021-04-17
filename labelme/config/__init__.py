@@ -3,7 +3,7 @@ import shutil
 
 import yaml
 
-from labelme.logger import logger
+from logger import logger
 
 
 here = osp.dirname(osp.abspath(__file__))

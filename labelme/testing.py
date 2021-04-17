@@ -2,7 +2,7 @@ import json
 import os.path as osp
 
 import imgviz
-import labelme.utils
+import utils
 
 
 def assert_labelfile_sanity(filename):

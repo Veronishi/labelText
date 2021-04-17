@@ -17,21 +17,20 @@ from labelme import __appname__
 from labelme import PY2
 from labelme import QT5
 
-from . import utils
-from labelme.config import get_config
-from labelme.label_file import LabelFile
-from labelme.label_file import LabelFileError
-from labelme.logger import logger
-from labelme.shape import Shape
-from labelme.widgets import BrightnessContrastDialog
-from labelme.widgets import Canvas
-from labelme.widgets import LabelDialog
-from labelme.widgets import LabelListWidget
-from labelme.widgets import LabelListWidgetItem
-from labelme.widgets import ToolBar
-from labelme.widgets import UniqueLabelQListWidget
-from labelme.widgets import ZoomWidget
-
+import utils
+from config import get_config
+from label_file import LabelFile
+from label_file import LabelFileError
+from logger import logger
+from shape import Shape
+from widgets import BrightnessContrastDialog
+from widgets import Canvas
+from widgets import LabelDialog
+from widgets import LabelListWidget
+from widgets import LabelListWidgetItem
+from widgets import ToolBar
+from widgets import UniqueLabelQListWidget
+from widgets import ZoomWidget
 
 # FIXME
 # - [medium] Set max zoom value to something big enough for FitWidth/Window
@@ -126,7 +125,19 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         self.shape_dock.setObjectName("Labels")
         self.shape_dock.setWidget(self.labelList)
-
+        
+        #############################################################################################
+        self.labelListB = LabelListWidget()
+        self.labelListB.itemSelectionChanged.connect(self.labelSelectionChanged)
+        self.labelListB.itemDoubleClicked.connect(self.editLabel)
+        self.labelListB.itemChanged.connect(self.labelItemChanged)
+        self.labelListB.itemDropped.connect(self.labelOrderChanged)
+        
+        self.text_dock = QtWidgets.QDockWidget(self.tr("Text and Link"), self)
+        self.text_dock.setObjectName("Texts")
+        self.text_dock.setWidget(self.labelListB)
+        ###############################################################################################     
+        
         self.uniqLabelList = UniqueLabelQListWidget()
         self.uniqLabelList.setToolTip(
             self.tr(
@@ -134,6 +145,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 "Press 'Esc' to deselect."
             )
         )
+        
         if self._config["labels"]:
             for label in self._config["labels"]:
                 item = self.uniqLabelList.createItemFromLabel(label)
@@ -165,7 +177,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.zoomWidget = ZoomWidget()
         self.setAcceptDrops(True)
 
-        self.canvas = self.labelList.canvas = Canvas(
+        self.canvas = self.labelList.canvas = self.labelListB.canvas = Canvas(
             epsilon=self._config["epsilon"],
             double_click=self._config["canvas"]["double_click"],
             num_backups=self._config["canvas"]["num_backups"],
@@ -189,7 +201,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(scrollArea)
 
         features = QtWidgets.QDockWidget.DockWidgetFeatures()
-        for dock in ["flag_dock", "label_dock", "shape_dock", "file_dock"]:
+        for dock in ["flag_dock", "label_dock", "shape_dock", "text_dock", "file_dock"]: #shape_dockB
             if self._config[dock]["closable"]:
                 features = features | QtWidgets.QDockWidget.DockWidgetClosable
             if self._config[dock]["floatable"]:
@@ -203,6 +215,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.flag_dock)
         self.addDockWidget(Qt.RightDockWidgetArea, self.label_dock)
         self.addDockWidget(Qt.RightDockWidgetArea, self.shape_dock)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.text_dock)
         self.addDockWidget(Qt.RightDockWidgetArea, self.file_dock)
 
         # Actions
@@ -553,6 +566,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.labelList.customContextMenuRequested.connect(
             self.popLabelListMenu
         )
+        self.labelListB.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.labelListB.customContextMenuRequested.connect(
+            self.popLabelListMenuB
+        )
+        
 
         # Store actions for further handling.
         self.actions = utils.struct(
@@ -643,8 +661,10 @@ class MainWindow(QtWidgets.QMainWindow):
             edit=self.menu(self.tr("&Edit")),
             view=self.menu(self.tr("&View")),
             help=self.menu(self.tr("&Help")),
+            link=self.menu(self.tr("&Link")),
             recentFiles=QtWidgets.QMenu(self.tr("Open &Recent")),
             labelList=labelMenu,
+            labelListB=labelMenu,
         )
 
         utils.addActions(
@@ -673,6 +693,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.flag_dock.toggleViewAction(),
                 self.label_dock.toggleViewAction(),
                 self.shape_dock.toggleViewAction(),
+                self.text_dock.toggleViewAction(),
                 self.file_dock.toggleViewAction(),
                 None,
                 fill_drawing,
@@ -887,6 +908,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def resetState(self):
         self.labelList.clear()
+        self.labelListB.clear()
         self.filename = None
         self.imagePath = None
         self.imageData = None
@@ -896,8 +918,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def currentItem(self):
         items = self.labelList.selectedItems()
+        itemsB = self.labelListB.selectedItems()
         if items:
             return items[0]
+        if itemsB:
+            return itemsB[0]
         return None
 
     def addRecentFile(self, filename):
@@ -912,6 +937,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def undoShapeEdit(self):
         self.canvas.restoreShape()
         self.labelList.clear()
+        self.labelListB.clear()
         self.loadShapes(self.canvas.shapes)
         self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
 
@@ -1009,6 +1035,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def popLabelListMenu(self, point):
         self.menus.labelList.exec_(self.labelList.mapToGlobal(point))
 
+    def popLabelListMenuB(self, point):
+        self.labelListB.exec_(self.labelListB.mapToGlobal(point))
+
     def validateLabel(self, label):
         # no validation
         if self._config["validate_label"] is None:
@@ -1090,12 +1119,16 @@ class MainWindow(QtWidgets.QMainWindow):
         for shape in self.canvas.selectedShapes:
             shape.selected = False
         self.labelList.clearSelection()
+        self.labelListB.clearSelection()
         self.canvas.selectedShapes = selected_shapes
         for shape in self.canvas.selectedShapes:
             shape.selected = True
             item = self.labelList.findItemByShape(shape)
             self.labelList.selectItem(item)
             self.labelList.scrollToItem(item)
+            itemB = self.labelList.findItemByShape(shape)
+            self.labelListB.selectItem(itemB)
+            self.labelListB.scrollToItem(itemB)
         self._noSelectionSlot = False
         n_selected = len(selected_shapes)
         self.actions.delete.setEnabled(n_selected)
@@ -1108,7 +1141,9 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             text = "{} ({})".format(shape.label, shape.group_id)
         label_list_item = LabelListWidgetItem(text, shape)
+        label_list_itemB = label_list_item.clone()
         self.labelList.addItem(label_list_item)
+        self.labelListB.addItem(label_list_itemB)
         if not self.uniqLabelList.findItemsByLabel(shape.label):
             item = self.uniqLabelList.createItemFromLabel(shape.label)
             self.uniqLabelList.addItem(item)
@@ -1119,13 +1154,14 @@ class MainWindow(QtWidgets.QMainWindow):
             action.setEnabled(True)
 
         rgb = self._get_rgb_by_label(shape.label)
-
+        #add colored dot in label list
         r, g, b = rgb
         label_list_item.setText(
             '{} <font color="#{:02x}{:02x}{:02x}">●</font>'.format(
                 text, r, g, b
             )
         )
+        
         shape.line_color = QtGui.QColor(r, g, b)
         shape.vertex_fill_color = QtGui.QColor(r, g, b)
         shape.hvertex_fill_color = QtGui.QColor(255, 255, 255)
@@ -1151,13 +1187,16 @@ class MainWindow(QtWidgets.QMainWindow):
     def remLabels(self, shapes):
         for shape in shapes:
             item = self.labelList.findItemByShape(shape)
+            itemB = self.labelListB.findItemByShape(shape)
             self.labelList.removeItem(item)
+            self.labelListB.removeItem(itemB)
 
     def loadShapes(self, shapes, replace=True):
         self._noSelectionSlot = True
         for shape in shapes:
             self.addLabel(shape)
         self.labelList.clearSelection()
+        self.labelListB.clearSelection()
         self._noSelectionSlot = False
         self.canvas.loadShapes(shapes, replace=replace)
 
@@ -1263,6 +1302,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def copySelectedShape(self):
         added_shapes = self.canvas.copySelectedShapes()
         self.labelList.clearSelection()
+        self.labelListB.clearSelection()
         for shape in added_shapes:
             self.addLabel(shape)
         self.setDirty()
@@ -1274,6 +1314,8 @@ class MainWindow(QtWidgets.QMainWindow):
             selected_shapes = []
             for item in self.labelList.selectedItems():
                 selected_shapes.append(item.shape())
+            '''for item in self.labelListB.selectedItems():
+                selected_shapes.append(item.shape())'''
             if selected_shapes:
                 self.canvas.selectShapes(selected_shapes)
             else:
@@ -1286,6 +1328,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def labelOrderChanged(self):
         self.setDirty()
         self.canvas.loadShapes([item.shape() for item in self.labelList])
+        self.canvas.loadShapes([item.shape() for item in self.labelListB])
 
     # Callback functions:
 
@@ -1316,6 +1359,7 @@ class MainWindow(QtWidgets.QMainWindow):
             text = ""
         if text:
             self.labelList.clearSelection()
+            self.labelListB.clearSelection()
             shape = self.canvas.setLastLabel(text, flags)
             shape.group_id = group_id
             self.addLabel(shape)
@@ -1413,6 +1457,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def togglePolygons(self, value):
         for item in self.labelList:
+            item.setCheckState(Qt.Checked if value else Qt.Unchecked)
+        for item in self.labelListB:
             item.setCheckState(Qt.Checked if value else Qt.Unchecked)
 
     def loadFile(self, filename=None):
@@ -1904,6 +1950,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def copyShape(self):
         self.canvas.endMove(copy=True)
         self.labelList.clearSelection()
+        self.labelListB.clearSelection()
         for shape in self.canvas.selectedShapes:
             self.addLabel(shape)
         self.setDirty()
