@@ -45,6 +45,11 @@ shape_dock:
   closable: true
   movable: true
   floatable: true
+text_dock:
+  show: true
+  closable: true
+  movable: true
+  floatable: true
 file_dock:
   show: true
   closable: true

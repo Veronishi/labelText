@@ -31,6 +31,8 @@ from labelme.widgets import LabelListWidgetItem
 from labelme.widgets import ToolBar
 from labelme.widgets import UniqueLabelQListWidget
 from labelme.widgets import ZoomWidget
+from labelme.widgets import LabelListTextWidget
+from labelme.widgets import LabelListTextWidgetItem
 
 
 # FIXME
@@ -126,7 +128,18 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         self.shape_dock.setObjectName("Labels")
         self.shape_dock.setWidget(self.labelList)
-
+####################################################################################################
+        self.labelListText = LabelListTextWidget()
+        self.labelListText.itemSelectionChanged.connect(self.labelTextSelectionChanged)
+        self.labelListText.itemDoubleClicked.connect(self.editLabel) #crea una callback apposita
+        #self.labelListText.itemChanged.connect(self.labelItemChanged)
+        #self.labelListText.itemDropped.connect(self.labelTextOrderChanged)
+        self.text_dock = QtWidgets.QDockWidget(
+            self.tr("Text and Link"), self
+        )
+        self.text_dock.setObjectName("Texts")
+        self.text_dock.setWidget(self.labelListText)
+####################################################################################################
         self.uniqLabelList = UniqueLabelQListWidget()
         self.uniqLabelList.setToolTip(
             self.tr(
@@ -189,7 +202,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(scrollArea)
 
         features = QtWidgets.QDockWidget.DockWidgetFeatures()
-        for dock in ["flag_dock", "label_dock", "shape_dock", "file_dock"]:
+        for dock in ["flag_dock", "label_dock", "shape_dock", "text_dock", "file_dock"]:
             if self._config[dock]["closable"]:
                 features = features | QtWidgets.QDockWidget.DockWidgetClosable
             if self._config[dock]["floatable"]:
@@ -203,6 +216,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.flag_dock)
         self.addDockWidget(Qt.RightDockWidgetArea, self.label_dock)
         self.addDockWidget(Qt.RightDockWidgetArea, self.shape_dock)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.text_dock)
         self.addDockWidget(Qt.RightDockWidgetArea, self.file_dock)
 
         # Actions
@@ -546,12 +560,18 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         fill_drawing.trigger()
 
-        # Lavel list context menu.
+        # Label list context menu.
         labelMenu = QtWidgets.QMenu()
         utils.addActions(labelMenu, (edit, delete))
         self.labelList.setContextMenuPolicy(Qt.CustomContextMenu)
         self.labelList.customContextMenuRequested.connect(
             self.popLabelListMenu
+        )
+        labelMenuText = QtWidgets.QMenu()
+        utils.addActions(labelMenuText, (edit, delete))
+        self.labelListText.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.labelListText.customContextMenuRequested.connect(
+            self.popLabelListTextMenu
         )
 
         # Store actions for further handling.
@@ -645,6 +665,7 @@ class MainWindow(QtWidgets.QMainWindow):
             help=self.menu(self.tr("&Help")),
             recentFiles=QtWidgets.QMenu(self.tr("Open &Recent")),
             labelList=labelMenu,
+            labelListText=labelMenuText,
         )
 
         utils.addActions(
@@ -673,6 +694,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.flag_dock.toggleViewAction(),
                 self.label_dock.toggleViewAction(),
                 self.shape_dock.toggleViewAction(),
+                self.text_dock.toggleViewAction(),
                 self.file_dock.toggleViewAction(),
                 None,
                 fill_drawing,
@@ -1009,6 +1031,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def popLabelListMenu(self, point):
         self.menus.labelList.exec_(self.labelList.mapToGlobal(point))
 
+    def popLabelListTextMenu(self, point):
+        self.menus.labelListText.exec_(self.labelListText.mapToGlobal(point))
+
     def validateLabel(self, label):
         # no validation
         if self._config["validate_label"] is None:
@@ -1022,7 +1047,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return False
 
     def editLabel(self, item=None):
-        if item and not isinstance(item, LabelListWidgetItem):
+        if item and not isinstance(item, LabelListWidgetItem) and not isinstance(item, LabelListTextWidgetItem):
             raise TypeError("item must be LabelListWidgetItem type")
 
         if not self.canvas.editing():
@@ -1039,6 +1064,7 @@ class MainWindow(QtWidgets.QMainWindow):
             flags=shape.flags,
             group_id=shape.group_id,
         )
+        #crea labelDialog dedicato
         if text is None:
             return
         if not self.validateLabel(text):
@@ -1090,12 +1116,16 @@ class MainWindow(QtWidgets.QMainWindow):
         for shape in self.canvas.selectedShapes:
             shape.selected = False
         self.labelList.clearSelection()
+        self.labelListText.clearSelection()
         self.canvas.selectedShapes = selected_shapes
         for shape in self.canvas.selectedShapes:
             shape.selected = True
             item = self.labelList.findItemByShape(shape)
+            itemText = self.labelListText.findItemByShape(shape)
             self.labelList.selectItem(item)
+            self.labelListText.selectItem(itemText)
             self.labelList.scrollToItem(item)
+            self.labelListText.scrollToItem(itemText)
         self._noSelectionSlot = False
         n_selected = len(selected_shapes)
         self.actions.delete.setEnabled(n_selected)
@@ -1105,10 +1135,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def addLabel(self, shape):
         if shape.group_id is None:
             text = shape.label
+            textLink = shape.label
         else:
             text = "{} ({})".format(shape.label, shape.group_id)
+            textLink = "({})".format(shape.group_id)
         label_list_item = LabelListWidgetItem(text, shape)
+        label_list_text_item = LabelListTextWidgetItem(textLink, shape)
         self.labelList.addItem(label_list_item)
+        self.labelListText.addItem(label_list_text_item)
         if not self.uniqLabelList.findItemsByLabel(shape.label):
             item = self.uniqLabelList.createItemFromLabel(shape.label)
             self.uniqLabelList.addItem(item)
@@ -1152,6 +1186,8 @@ class MainWindow(QtWidgets.QMainWindow):
         for shape in shapes:
             item = self.labelList.findItemByShape(shape)
             self.labelList.removeItem(item)
+            itemText = self.labelListText.findItemByShape(shape)
+            self.labelListText.removeItem(itemText)
 
     def loadShapes(self, shapes, replace=True):
         self._noSelectionSlot = True
@@ -1279,6 +1315,19 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 self.canvas.deSelectShape()
 
+    def labelTextSelectionChanged(self):
+        if self._noSelectionSlot:
+            return
+        if self.canvas.editing():
+            selected_shapes = []
+            for item in self.labelListText.selectedItems():
+                selected_shapes.append(item.shape())
+            if selected_shapes:
+                self.canvas.selectShapes(selected_shapes)
+            else:
+                self.canvas.deSelectShape()
+
+
     def labelItemChanged(self, item):
         shape = item.shape()
         self.canvas.setShapeVisible(shape, item.checkState() == Qt.Checked)
@@ -1286,6 +1335,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def labelOrderChanged(self):
         self.setDirty()
         self.canvas.loadShapes([item.shape() for item in self.labelList])
+
+    def labelTextOrderChanged(self):
+        self.setDirty()
+        self.canvas.loadShapes([item.shape() for item in self.labelListText])
 
     # Callback functions:
 

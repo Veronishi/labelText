@@ -12,6 +12,9 @@ from .label_dialog import LabelQLineEdit
 from .label_list_widget import LabelListWidget
 from .label_list_widget import LabelListWidgetItem
 
+from .label_list_text_widget import LabelListTextWidget
+from .label_list_text_widget import LabelListTextWidgetItem
+
 from .tool_bar import ToolBar
 
 from .unique_label_qlist_widget import UniqueLabelQListWidget
