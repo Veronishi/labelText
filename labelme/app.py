@@ -589,7 +589,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.popLabelListMenu
         )
         labelMenuText = QtWidgets.QMenu()
-        utils.addActions(labelMenuText, (edit, delete))
+        utils.addActions(labelMenuText, (editText, delete))
         self.labelListText.setContextMenuPolicy(Qt.CustomContextMenu)
         self.labelListText.customContextMenuRequested.connect(
             self.popLabelListTextMenu
@@ -608,6 +608,7 @@ class MainWindow(QtWidgets.QMainWindow):
             toggleKeepPrevMode=toggle_keep_prev_mode,
             delete=delete,
             edit=edit,
+            editText=editText,
             copy=copy,
             undoLastPoint=undoLastPoint,
             undo=undo,
@@ -1068,7 +1069,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return False
 
     def editLabel(self, item=None):
-        if item and not isinstance(item, LabelListWidgetItem) and not isinstance(item, LabelListTextWidgetItem):
+        if item and not isinstance(item, LabelListWidgetItem):
             raise TypeError("item must be LabelListWidgetItem type")
 
         if not self.canvas.editing():
@@ -1085,7 +1086,6 @@ class MainWindow(QtWidgets.QMainWindow):
             flags=shape.flags,
             group_id=shape.group_id,
         )
-        #crea labelDialog dedicato
         if text is None:
             return
         if not self.validateLabel(text):
@@ -1110,8 +1110,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.uniqLabelList.addItem(item)
 
     def editLabelText(self, item=None):
-        if item and not isinstance(item, LabelListWidgetItem) and not isinstance(item, LabelListTextWidgetItem):
-            raise TypeError("item must be LabelListWidgetItem type")
+        if item and not isinstance(item, LabelListTextWidgetItem):
+            raise TypeError("item must be LabelListTextWidgetItem type")
 
         if not self.canvas.editing():
             return
@@ -1127,7 +1127,6 @@ class MainWindow(QtWidgets.QMainWindow):
             flags=shape.flags,
             group_id=shape.group_id,
         )
-        # crea labelDialog dedicato
         if text is None:
             return
         if not self.validateLabel(text):
@@ -1194,6 +1193,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actions.delete.setEnabled(n_selected)
         self.actions.copy.setEnabled(n_selected)
         self.actions.edit.setEnabled(n_selected == 1)
+        self.actions.editText.setEnabled(n_selected == 1)
 
     def addLabel(self, shape):
         if shape.group_id is None:
