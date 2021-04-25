@@ -31,8 +31,10 @@ from labelme.widgets import LabelListWidgetItem
 from labelme.widgets import ToolBar
 from labelme.widgets import UniqueLabelQListWidget
 from labelme.widgets import ZoomWidget
+from labelme.widgets import LabelTextDialog
 from labelme.widgets import LabelListTextWidget
 from labelme.widgets import LabelListTextWidgetItem
+
 
 
 # FIXME
@@ -107,6 +109,16 @@ class MainWindow(QtWidgets.QMainWindow):
             flags=self._config["label_flags"],
         )
 
+        self.labelTextDialog = LabelTextDialog(
+            parent=self,
+            labels=self._config["labels"],
+            sort_labels=self._config["sort_labels"],
+            show_text_field=self._config["show_label_text_field"],
+            completion=self._config["label_completion"],
+            fit_to_content=self._config["fit_to_content"],
+            flags=self._config["label_flags"],
+        )
+
         self.labelList = LabelListWidget()
         self.lastOpenDir = None
 
@@ -131,7 +143,7 @@ class MainWindow(QtWidgets.QMainWindow):
 ####################################################################################################
         self.labelListText = LabelListTextWidget()
         self.labelListText.itemSelectionChanged.connect(self.labelTextSelectionChanged)
-        self.labelListText.itemDoubleClicked.connect(self.editLabel) #crea una callback apposita
+        self.labelListText.itemDoubleClicked.connect(self.editLabelText) #crea una callback apposita
         #self.labelListText.itemChanged.connect(self.labelItemChanged)
         #self.labelListText.itemDropped.connect(self.labelTextOrderChanged)
         self.text_dock = QtWidgets.QDockWidget(
@@ -546,6 +558,15 @@ class MainWindow(QtWidgets.QMainWindow):
             shortcuts["edit_label"],
             "edit",
             self.tr("Modify the label of the selected polygon"),
+            enabled=False,
+        )
+
+        editText = action(
+            self.tr("&Edit Label Text"),
+            self.editLabelText,
+            shortcuts["edit_label_text"],
+            "edit",
+            self.tr("Modify the text of label of the selected polygon"),
             enabled=False,
         )
 
@@ -1065,6 +1086,48 @@ class MainWindow(QtWidgets.QMainWindow):
             group_id=shape.group_id,
         )
         #crea labelDialog dedicato
+        if text is None:
+            return
+        if not self.validateLabel(text):
+            self.errorMessage(
+                self.tr("Invalid label"),
+                self.tr("Invalid label '{}' with validation type '{}'").format(
+                    text, self._config["validate_label"]
+                ),
+            )
+            return
+        shape.label = text
+        shape.flags = flags
+        shape.group_id = group_id
+        if shape.group_id is None:
+            item.setText(shape.label)
+        else:
+            item.setText("{} ({})".format(shape.label, shape.group_id))
+        self.setDirty()
+        if not self.uniqLabelList.findItemsByLabel(shape.label):
+            item = QtWidgets.QListWidgetItem()
+            item.setData(Qt.UserRole, shape.label)
+            self.uniqLabelList.addItem(item)
+
+    def editLabelText(self, item=None):
+        if item and not isinstance(item, LabelListWidgetItem) and not isinstance(item, LabelListTextWidgetItem):
+            raise TypeError("item must be LabelListWidgetItem type")
+
+        if not self.canvas.editing():
+            return
+        if not item:
+            item = self.currentItem()
+        if item is None:
+            return
+        shape = item.shape()
+        if shape is None:
+            return
+        text, flags, group_id = self.labelTextDialog.popUp(
+            text=shape.label,
+            flags=shape.flags,
+            group_id=shape.group_id,
+        )
+        # crea labelDialog dedicato
         if text is None:
             return
         if not self.validateLabel(text):
