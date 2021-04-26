@@ -51,9 +51,11 @@ class Shape(object):
         shape_type=None,
         flags=None,
         group_id=None,
+        link=set(),
     ):
         self.label = label
         self.group_id = group_id
+        self.link = link
         self.points = []
         self.fill = False
         self.selected = False

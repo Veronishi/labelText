@@ -389,6 +389,16 @@ class MainWindow(QtWidgets.QMainWindow):
             self.tr("Start drawing linestrip. Ctrl+LeftClick ends creation."),
             enabled=False,
         )
+
+        link = action(
+            self.tr("Link"),
+            self.linkSelectedShape,
+            shortcuts["link"],
+            "link",
+            self.tr("Links the ID of the selected polygons"),
+            enabled=True,
+        )
+
         editMode = action(
             self.tr("Edit Polygons"),
             self.setEditMode,
@@ -621,6 +631,7 @@ class MainWindow(QtWidgets.QMainWindow):
             createLineMode=createLineMode,
             createPointMode=createPointMode,
             createLineStripMode=createLineStripMode,
+            link=link,
             zoom=zoom,
             zoomIn=zoomIn,
             zoomOut=zoomOut,
@@ -685,6 +696,7 @@ class MainWindow(QtWidgets.QMainWindow):
             edit=self.menu(self.tr("&Edit")),
             view=self.menu(self.tr("&View")),
             help=self.menu(self.tr("&Help")),
+            link=self.menu(self.tr("&Link")),
             recentFiles=QtWidgets.QMenu(self.tr("Open &Recent")),
             labelList=labelMenu,
             labelListText=labelMenuText,
@@ -709,6 +721,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 quit,
             ),
         )
+        utils.addActions(self.menus.link, (link,))
         utils.addActions(self.menus.help, (help,))
         utils.addActions(
             self.menus.view,
@@ -931,6 +944,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def resetState(self):
         self.labelList.clear()
+        self.labelListText.clear()
         self.filename = None
         self.imagePath = None
         self.imageData = None
@@ -1258,6 +1272,7 @@ class MainWindow(QtWidgets.QMainWindow):
         for shape in shapes:
             self.addLabel(shape)
         self.labelList.clearSelection()
+        self.labelListText.clearSelection()
         self._noSelectionSlot = False
         self.canvas.loadShapes(shapes, replace=replace)
 
@@ -1391,7 +1406,6 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 self.canvas.deSelectShape()
 
-
     def labelItemChanged(self, item):
         shape = item.shape()
         self.canvas.setShapeVisible(shape, item.checkState() == Qt.Checked)
@@ -1403,6 +1417,21 @@ class MainWindow(QtWidgets.QMainWindow):
     def labelTextOrderChanged(self):
         self.setDirty()
         self.canvas.loadShapes([item.shape() for item in self.labelListText])
+
+    def linkSelectedShape(self):
+        if self._noSelectionSlot:
+            return
+        selected = self.labelList.selectedItems()
+        self.labelList.clearSelection()
+        self.labelListText.clearSelection()
+        linked = set()
+        print("nuovo: ")
+        for item in selected:
+            print(item.shape().group_id)
+            linked.add(item.shape().group_id)
+        print("finale: " + str(linked))
+        #per tutti gli ID in linked -> cerca per ID e aggiorna suo campo link
+        self.setDirty()
 
     # Callback functions:
 
@@ -1433,6 +1462,7 @@ class MainWindow(QtWidgets.QMainWindow):
             text = ""
         if text:
             self.labelList.clearSelection()
+            self.labelListText.clearSelection()
             shape = self.canvas.setLastLabel(text, flags)
             shape.group_id = group_id
             self.addLabel(shape)
@@ -2021,6 +2051,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def copyShape(self):
         self.canvas.endMove(copy=True)
         self.labelList.clearSelection()
+        self.labelListText.clearSelection()
         for shape in self.canvas.selectedShapes:
             self.addLabel(shape)
         self.setDirty()
