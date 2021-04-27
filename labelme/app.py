@@ -1158,7 +1158,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if shape.group_id is None:
             item.setText(shape.label)
         else:
-            item.setText("{} ({})".format(shape.label, shape.group_id))
+            item.setText("({})".format(shape.link))
         self.setDirty()
         if not self.uniqLabelList.findItemsByLabel(shape.label):
             item = QtWidgets.QListWidgetItem()
@@ -1213,10 +1213,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def addLabel(self, shape):
         if shape.group_id is None:
             text = shape.label
-            textLink = shape.label
+            textLink = ""
         else:
             text = "{} ({})".format(shape.label, shape.group_id)
-            textLink = "({})".format(shape.group_id)
+            textLink = "({})".format(str(shape.link))
         label_list_item = LabelListWidgetItem(text, shape)
         label_list_text_item = LabelListTextWidgetItem(textLink, shape)
         self.labelList.addItem(label_list_item)
@@ -1330,6 +1330,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     label=s.label.encode("utf-8") if PY2 else s.label,
                     points=[(p.x(), p.y()) for p in s.points],
                     group_id=s.group_id,
+                    link=s.link,
                     shape_type=s.shape_type,
                     flags=s.flags,
                 )
@@ -1421,16 +1422,20 @@ class MainWindow(QtWidgets.QMainWindow):
     def linkSelectedShape(self):
         if self._noSelectionSlot:
             return
-        selected = self.labelList.selectedItems()
+        selected = self.labelListText.selectedItems()
         self.labelList.clearSelection()
         self.labelListText.clearSelection()
         linked = set()
         print("nuovo: ")
         for item in selected:
-            print(item.shape().group_id)
             linked.add(item.shape().group_id)
-        print("finale: " + str(linked))
-        #per tutti gli ID in linked -> cerca per ID e aggiorna suo campo link
+        for item in selected:
+            item.shape().link = linked
+            print("item: "+str(item.shape().group_id)+" - linked: "+str(item.shape().link))
+            if item.shape().group_id is None:
+                item.setText(item.shape().label)
+            else:
+                item.setText("({})".format(item.shape().link))
         self.setDirty()
 
     # Callback functions:
