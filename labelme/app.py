@@ -1325,12 +1325,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
         def format_shape(s):
             data = s.other_data.copy()
+            print(s.link)
             data.update(
                 dict(
                     label=s.label.encode("utf-8") if PY2 else s.label,
                     points=[(p.x(), p.y()) for p in s.points],
                     group_id=s.group_id,
-                    link=s.link,
+                    link=list(s.link) if s.link != None else [],
                     shape_type=s.shape_type,
                     flags=s.flags,
                 )

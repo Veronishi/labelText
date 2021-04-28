@@ -81,6 +81,7 @@ class LabelFile(object):
             "label",
             "points",
             "group_id",
+            "link",
             "shape_type",
             "flags",
         ]
@@ -125,6 +126,7 @@ class LabelFile(object):
                     shape_type=s.get("shape_type", "polygon"),
                     flags=s.get("flags", {}),
                     group_id=s.get("group_id"),
+                    link=s.get("link"),
                     other_data={
                         k: v for k, v in s.items() if k not in shape_keys
                     },
