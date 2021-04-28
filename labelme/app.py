@@ -143,7 +143,7 @@ class MainWindow(QtWidgets.QMainWindow):
 ####################################################################################################
         self.labelListText = LabelListTextWidget()
         self.labelListText.itemSelectionChanged.connect(self.labelTextSelectionChanged)
-        self.labelListText.itemDoubleClicked.connect(self.editLabelText) #crea una callback apposita
+        self.labelListText.itemDoubleClicked.connect(self.editLabelText)
         #self.labelListText.itemChanged.connect(self.labelItemChanged)
         #self.labelListText.itemDropped.connect(self.labelTextOrderChanged)
         self.text_dock = QtWidgets.QDockWidget(
@@ -1155,10 +1155,10 @@ class MainWindow(QtWidgets.QMainWindow):
         shape.label = text
         shape.flags = flags
         shape.group_id = group_id
-        if shape.group_id is None:
-            item.setText(shape.label)
+        if shape.link == set():
+            item.setText("{}")
         else:
-            item.setText("({})".format(shape.link))
+            item.setText("{}".format(shape.link))
         self.setDirty()
         if not self.uniqLabelList.findItemsByLabel(shape.label):
             item = QtWidgets.QListWidgetItem()
@@ -1211,12 +1211,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actions.editText.setEnabled(n_selected == 1)
 
     def addLabel(self, shape):
+        if shape.link == set():
+            textLink = "{}"
+        else:
+            textLink = "{}".format(str(shape.link))
         if shape.group_id is None:
             text = shape.label
-            textLink = ""
         else:
             text = "{} ({})".format(shape.label, shape.group_id)
-            textLink = "({})".format(str(shape.link))
         label_list_item = LabelListWidgetItem(text, shape)
         label_list_text_item = LabelListTextWidgetItem(textLink, shape)
         self.labelList.addItem(label_list_item)
@@ -1284,6 +1286,7 @@ class MainWindow(QtWidgets.QMainWindow):
             shape_type = shape["shape_type"]
             flags = shape["flags"]
             group_id = shape["group_id"]
+            link = set(shape["link"])
             other_data = shape["other_data"]
 
             if not points:
@@ -1294,6 +1297,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 label=label,
                 shape_type=shape_type,
                 group_id=group_id,
+                link=link,
             )
             for x, y in points:
                 shape.addPoint(QtCore.QPointF(x, y))
@@ -1433,10 +1437,10 @@ class MainWindow(QtWidgets.QMainWindow):
         for item in selected:
             item.shape().link = linked
             print("item: "+str(item.shape().group_id)+" - linked: "+str(item.shape().link))
-            if item.shape().group_id is None:
-                item.setText(item.shape().label)
+            if item.shape().link == set():
+                item.setText("")
             else:
-                item.setText("({})".format(item.shape().link))
+                item.setText("{}".format(item.shape().link))
         self.setDirty()
 
     # Callback functions:

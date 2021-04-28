@@ -51,7 +51,7 @@ class Shape(object):
         shape_type=None,
         flags=None,
         group_id=None,
-        link=None,
+        link=set(),
     ):
         self.label = label
         self.group_id = group_id
