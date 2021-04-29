@@ -78,6 +78,7 @@ class LabelFile(object):
             "imageWidth",
         ]
         shape_keys = [
+            "text",
             "label",
             "points",
             "group_id",
@@ -121,6 +122,7 @@ class LabelFile(object):
             )
             shapes = [
                 dict(
+                    text=s["text"],
                     label=s["label"],
                     points=s["points"],
                     shape_type=s.get("shape_type", "polygon"),

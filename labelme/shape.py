@@ -46,13 +46,15 @@ class Shape(object):
 
     def __init__(
         self,
+        text="",
+        link=set(),
         label=None,
         line_color=None,
         shape_type=None,
         flags=None,
         group_id=None,
-        link=set(),
     ):
+        self.text = text
         self.label = label
         self.group_id = group_id
         self.link = link

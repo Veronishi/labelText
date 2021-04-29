@@ -1281,6 +1281,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def loadLabels(self, shapes):
         s = []
         for shape in shapes:
+            text = shape["text"]
             label = shape["label"]
             points = shape["points"]
             shape_type = shape["shape_type"]
@@ -1294,6 +1295,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 continue
 
             shape = Shape(
+                text=text,
                 label=label,
                 shape_type=shape_type,
                 group_id=group_id,
@@ -1329,9 +1331,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         def format_shape(s):
             data = s.other_data.copy()
-            print(s.link)
             data.update(
                 dict(
+                    text=s.text.encode("utf-8") if PY2 else s.text,
                     label=s.label.encode("utf-8") if PY2 else s.label,
                     points=[(p.x(), p.y()) for p in s.points],
                     group_id=s.group_id,
