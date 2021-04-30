@@ -1212,9 +1212,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def addLabel(self, shape):
         if shape.link == set():
-            textLink = "{}"
+            textLink = "{} "+shape.text
         else:
-            textLink = "{}".format(str(shape.link))
+            textLink = "{} {}".format(str(shape.link), shape.text)
         if shape.group_id is None:
             text = shape.label
         else:
@@ -1433,12 +1433,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.labelList.clearSelection()
         self.labelListText.clearSelection()
         linked = set()
-        print("nuovo: ")
         for item in selected:
             linked.add(item.shape().group_id)
         for item in selected:
             item.shape().link = linked
-            print("item: "+str(item.shape().group_id)+" - linked: "+str(item.shape().link))
             if item.shape().link == set():
                 item.setText("")
             else:
