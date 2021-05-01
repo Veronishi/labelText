@@ -1138,7 +1138,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if shape is None:
             return
         text, flags, group_id = self.labelTextDialog.popUp(
-            text=shape.label,
+            text=shape.text,
             flags=shape.flags,
             group_id=shape.group_id,
         )
@@ -1152,13 +1152,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 ),
             )
             return
-        shape.label = text
+        shape.text = text
         shape.flags = flags
         shape.group_id = group_id
         if shape.link == set():
-            item.setText("{}")
+            item.setText("{} " + shape.text)
         else:
-            item.setText("{}".format(shape.link))
+            item.setText("{} {}".format(shape.link, shape.text))
         self.setDirty()
         if not self.uniqLabelList.findItemsByLabel(shape.label):
             item = QtWidgets.QListWidgetItem()
@@ -1438,9 +1438,9 @@ class MainWindow(QtWidgets.QMainWindow):
         for item in selected:
             item.shape().link = linked
             if item.shape().link == set():
-                item.setText("")
+                item.setText("{}"+item.shape().text)
             else:
-                item.setText("{}".format(item.shape().link))
+                item.setText("{} {}".format(item.shape().link, item.shape().text))
         self.setDirty()
 
     # Callback functions:
