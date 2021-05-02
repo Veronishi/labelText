@@ -118,7 +118,7 @@ class LabelListWidget(QtWidgets.QListView):
         self.model().setItemPrototype(LabelListWidgetItem())
         self.setItemDelegate(HTMLDelegate())
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
-        self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
+        #self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
         self.setDefaultDropAction(Qt.MoveAction)
 
         self.doubleClicked.connect(self.itemDoubleClickedEvent)
