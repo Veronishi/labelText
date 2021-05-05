@@ -7,6 +7,11 @@ import os.path as osp
 import re
 import webbrowser
 
+import cv2
+import pytesseract
+from pytesseract import Output
+from utils import ground_truth
+
 import imgviz
 from qtpy import QtCore
 from qtpy.QtCore import Qt
@@ -544,6 +549,14 @@ class MainWindow(QtWidgets.QMainWindow):
             "Adjust brightness and contrast",
             enabled=False,
         )
+        pytesseract = action(
+            self.tr("Tesseract"),
+            self.usePytesseract,
+            None,
+            "edit",
+            self.tr("Read text from image with tesseract"),
+            enabled=False,
+        )
         # Group zoom controls into a list for easier toggling.
         zoomActions = (
             self.zoomWidget,
@@ -638,6 +651,7 @@ class MainWindow(QtWidgets.QMainWindow):
             zoomOrg=zoomOrg,
             fitWindow=fitWindow,
             fitWidth=fitWidth,
+            pytesseract=pytesseract,
             brightnessContrast=brightnessContrast,
             zoomActions=zoomActions,
             openNextImg=openNextImg,
@@ -684,6 +698,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 createLineStripMode,
                 editMode,
                 brightnessContrast,
+                pytesseract,
             ),
             onShapesPresent=(saveAs, hideAll, showAll),
         )
@@ -779,6 +794,7 @@ class MainWindow(QtWidgets.QMainWindow):
             None,
             zoom,
             fitWidth,
+            pytesseract,
         )
 
         self.statusBar().showMessage(self.tr("%s started.") % __appname__)
@@ -1442,6 +1458,18 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 item.setText("{} {}".format(item.shape().link, item.shape().text))
         self.setDirty()
+
+    def usePytesseract(self):
+        selected = self.labelListText.selectedItems()
+        print(self.imagePath)
+        words = ground_truth.infoWords(self.imagePath)
+        for x in words:
+            print(x)
+        '''image = cv2.imread(self.imagePath)
+        cv2.imshow('image', image)
+        cv2.waitKey(0)
+        details = pytesseract.image_to_data(image, output_type=Output.DICT, lang='ita')
+        print(details)'''
 
     # Callback functions:
 
