@@ -1294,7 +1294,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._noSelectionSlot = False
         self.canvas.loadShapes(shapes, replace=replace)
 
-    def loadLabels(self, shapes):
+    def loadLabels(self, shapes, replace=True):
         s = []
         for shape in shapes:
             text = shape["text"]
@@ -1332,7 +1332,7 @@ class MainWindow(QtWidgets.QMainWindow):
             shape.other_data = other_data
 
             s.append(shape)
-        self.loadShapes(s)
+        self.loadShapes(s, replace)
 
     def loadFlags(self, flags):
         self.flag_widget.clear()
@@ -1461,15 +1461,28 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def usePytesseract(self):
         selected = self.labelListText.selectedItems()
-        print(self.imagePath)
         words = ground_truth.infoWords(self.imagePath)
-        for x in words:
-            print(x)
-        '''image = cv2.imread(self.imagePath)
-        cv2.imshow('image', image)
-        cv2.waitKey(0)
-        details = pytesseract.image_to_data(image, output_type=Output.DICT, lang='ita')
-        print(details)'''
+        shapes = []
+        for word in words:
+            shape = {
+                'text' : word['text'],
+                'label' : word['label'],
+                'points': [[word['box'][0], word['box'][1]], [word['box'][2], word['box'][3]]], #[x1,y1][x2,y2]
+                'shape_type': "rectangle",
+                'flags': {},
+                'group_id': word['id'],
+                'link': set(),
+                'other_data': None,
+            }
+            print(shape)
+            trovato = False
+            for item in self.labelList:
+                if item.shape().group_id == shape['group_id']:
+                    trovato = True
+                    break
+            if not trovato:
+                shapes.append(shape)
+        self.loadLabels(shapes, False)
 
     # Callback functions:
 
