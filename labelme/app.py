@@ -1464,7 +1464,7 @@ class MainWindow(QtWidgets.QMainWindow):
         selectedItems = self.labelList.selectedItems()
         selected = self.canvas.selectedShapes
         if len(selected) == 0:
-            words = ground_truth.infoWords(self.imagePath, sum(map(lambda item : item.shape().group_id != None, self.labelList)))
+            words = ground_truth.infoWords(self.imagePath, sum(map(lambda item :  item.shape().group_id != None, self.labelList)))
             shapes = []
             for word in words:
                 trovato = False
@@ -1478,19 +1478,27 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             nWords = sum(map(lambda item : item.shape().label == "word" and item.shape().group_id != None, self.labelListText))
             newWords = ground_truth.adjuster(self.imagePath, selected, nWords)
-            for item in selectedItemsText:
-                if item.shape().link == set():
-                    item.setText("{} " + item.shape().text)
-                else:
-                    item.setText("{} {}".format(item.shape().link, item.shape().text))
-            for item in selectedItems:
-                rgb = self._get_rgb_by_label(item.shape().label)
-                r, g, b = rgb
-                if item.shape().group_id is None:
-                    item.setText('{} <font color="#{:02x}{:02x}{:02x}">●</font>'.format(item.shape().label, r, g, b))
-                else:
-                    item.setText('{} ({}) <font color="#{:02x}{:02x}{:02x}">●</font>'.format(item.shape().label, item.shape().group_id, r, g, b))
+        words = []
+        sentences = []
+        for item in self.labelListText:
+            if item.shape().label == "word":
+                words.append(item.shape())
+            else:
+                sentences.append(item.shape())
 
+        ground_truth.infoSentences(sentences, words, 0)
+        for item in self.labelListText:
+            if item.shape().link == set():
+                item.setText("{} " + item.shape().text)
+            else:
+                item.setText("{} {}".format(item.shape().link, item.shape().text))
+        for item in self.labelList:
+            rgb = self._get_rgb_by_label(item.shape().label)
+            r, g, b = rgb
+            if item.shape().group_id is None:
+                item.setText('{} <font color="#{:02x}{:02x}{:02x}">●</font>'.format(item.shape().label, r, g, b))
+            else:
+                item.setText('{} ({}) <font color="#{:02x}{:02x}{:02x}">●</font>'.format(item.shape().label, item.shape().group_id, r, g, b))
         self.setDirty()
 
     # Callback functions:
