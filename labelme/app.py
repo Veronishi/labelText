@@ -1464,12 +1464,12 @@ class MainWindow(QtWidgets.QMainWindow):
         selectedItems = self.labelList.selectedItems()
         selected = self.canvas.selectedShapes
         if len(selected) == 0:
-            words = ground_truth.infoWords(self.imagePath, sum(map(lambda item :  item.shape().group_id != None, self.labelList)))
+            words = ground_truth.infoWords(self.imagePath, 0)
             shapes = []
             for word in words:
                 trovato = False
                 for item in self.labelList:
-                    if item.shape().group_id == word['group_id']:
+                    if item.shape().group_id == word['group_id'] and item.shape().label == "word":
                         trovato = True
                         break
                 if not trovato:
@@ -1477,7 +1477,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.loadLabels(shapes, False)
         else:
             nWords = sum(map(lambda item : item.shape().label == "word" and item.shape().group_id != None, self.labelListText))
-            newWords = ground_truth.adjuster(self.imagePath, selected, nWords)
+            ground_truth.adjuster(self.imagePath, selected, nWords)
+
         words = []
         sentences = []
         for item in self.labelListText:

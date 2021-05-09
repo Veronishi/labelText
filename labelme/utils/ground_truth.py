@@ -9,6 +9,7 @@ import json
 import os
 from pytesseract import Output
 
+
 def generateLabelmeData(labelmepath, elements, considerLabelme):
     # generate a compatible labelme json
     #removeNull(labelmepath)
@@ -44,12 +45,12 @@ def adjuster(imagepath, selected, idx):
         if item.label == "word":
             if item.group_id is None:
                 idx += 1
-                item.group_id = str(idx)
+                item.group_id = idx
             img = cv2.imread(imagepath)
             if item.points[0].y() <= item.points[1].y():
                 crop_img = img[int(item.points[0].y()):int(item.points[1].y()), int(item.points[0].x()):int(item.points[1].x())]
             else:
-                img[int(item.points[1].y()):int(item.points[0].y()), int(item.points[1].x()):int(item.points[0].x())]
+                crop_img = img[int(item.points[1].y()):int(item.points[0].y()), int(item.points[1].x()):int(item.points[0].x())]
             #cv2.imshow('crop',crop_img)
             #cv2.waitKey(0)
             item.text = ''.join(pytesseract.image_to_data(crop_img, output_type=Output.DICT, lang='ita')['text'])
@@ -82,7 +83,7 @@ def infoWords(imageName, idx):
                     'label': "word",
                     'points': [[coordinates[0], coordinates[1]], [coordinates[2], coordinates[3]]],  # [x1,y1][x2,y2]
                     'shape_type': "rectangle",
-                    'group_id': str(idx),
+                    'group_id': idx,
                     'link': set(),
                     'flags': {},
                     'other_data': None,
