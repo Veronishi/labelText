@@ -1460,12 +1460,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setDirty()
 
     def usePytesseract(self):
-        id = 0
         selectedItemsText = self.labelListText.selectedItems()
         selectedItems = self.labelList.selectedItems()
         selected = self.canvas.selectedShapes
         if len(selected) == 0:
-            words = ground_truth.infoWords(self.imagePath)
+            words = ground_truth.infoWords(self.imagePath, sum(map(lambda item : item.shape().group_id != None, self.labelList)))
             shapes = []
             for word in words:
                 trovato = False

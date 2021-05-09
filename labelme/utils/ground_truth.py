@@ -112,7 +112,7 @@ def generateJson(fileName, elements, destinationpath):
     print("generated: " + annotationFileName)
 
 
-def infoWords(imageName):
+def infoWords(imageName, idx):
     image = cv2.imread(imageName)
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     threshold_img = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
@@ -122,7 +122,7 @@ def infoWords(imageName):
 
     # creating tuple with [coordinates], text OF SINGLE WORDS
     words = []  # contains ALL box + words + attributes
-    idx = 0
+    #idx = 0
     total_boxes = len(details['text'])
     for i in range(total_boxes):
         if int(details['conf'][i]) > 0 and str(details['text'][i]) != ' ':  # excluding low confidence and empty words
@@ -151,9 +151,9 @@ def infoWords(imageName):
     return words
 
 
-def infoSentences(rectangles, words):
+def infoSentences(rectangles, words, idx):
     infoRectangles = []
-    global idx
+    #global idx
 
     #generateGroupID(labelmepath)
     '''with open(labelmepath) as json_file:
