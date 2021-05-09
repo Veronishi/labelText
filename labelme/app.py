@@ -1460,29 +1460,39 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setDirty()
 
     def usePytesseract(self):
-        selected = self.labelListText.selectedItems()
-        words = ground_truth.infoWords(self.imagePath)
-        shapes = []
-        for word in words:
-            shape = {
-                'text' : word['text'],
-                'label' : word['label'],
-                'points': [[word['box'][0], word['box'][1]], [word['box'][2], word['box'][3]]], #[x1,y1][x2,y2]
-                'shape_type': "rectangle",
-                'flags': {},
-                'group_id': word['id'],
-                'link': set(),
-                'other_data': None,
-            }
-            print(shape)
-            trovato = False
-            for item in self.labelList:
-                if item.shape().group_id == shape['group_id']:
-                    trovato = True
-                    break
-            if not trovato:
-                shapes.append(shape)
-        self.loadLabels(shapes, False)
+        id = 0
+        selectedItemsText = self.labelListText.selectedItems()
+        selectedItems = self.labelList.selectedItems()
+        selected = self.canvas.selectedShapes
+        if len(selected) == 0:
+            words = ground_truth.infoWords(self.imagePath)
+            shapes = []
+            for word in words:
+                trovato = False
+                for item in self.labelList:
+                    if item.shape().group_id == word['group_id']:
+                        trovato = True
+                        break
+                if not trovato:
+                    shapes.append(word)
+            self.loadLabels(shapes, False)
+        else:
+            nWords = sum(map(lambda item : item.shape().label == "word" and item.shape().group_id != None, self.labelListText))
+            newWords = ground_truth.adjuster(self.imagePath, selected, nWords)
+            for item in selectedItemsText:
+                if item.shape().link == set():
+                    item.setText("{} " + item.shape().text)
+                else:
+                    item.setText("{} {}".format(item.shape().link, item.shape().text))
+            for item in selectedItems:
+                rgb = self._get_rgb_by_label(item.shape().label)
+                r, g, b = rgb
+                if item.shape().group_id is None:
+                    item.setText('{} <font color="#{:02x}{:02x}{:02x}">●</font>'.format(item.shape().label, r, g, b))
+                else:
+                    item.setText('{} ({}) <font color="#{:02x}{:02x}{:02x}">●</font>'.format(item.shape().label, item.shape().group_id, r, g, b))
+
+        self.setDirty()
 
     # Callback functions:
 

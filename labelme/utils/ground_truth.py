@@ -54,62 +54,52 @@ def generateLabelmeData(labelmepath, elements, considerLabelme):
             print(line.replace(textToSearch, textToReplace), end='')'''
 
 
-'''def adjuster(path):
-    global idx
-    # extract words from labelmeGiusti (the one adjusted by hand)
-    with open(path) as json_file:
-        labelmeGiusti = json.load(json_file)
-    fields = labelmeGiusti['shapes']
-    giustiRectangle = []
-    for giusto in fields:
-        giustoRectangle = {
-            'text': giusto['text'],
-            'box': [int(giusto['points'][0][0]), int(giusto['points'][0][1]), int(giusto['points'][1][0]),
-                    int(giusto['points'][1][1])],
-            'label': giusto['label'],
-            'id': giusto['group_id'],
-            'link': giusto['link'],
-        }
-        giustiRectangle.append(giustoRectangle)
-    # update data
+def adjuster(imagepath, selected, idx):
+    #global idx
+    #idx=0
     aggiustati = []
-    # check coordinates
-    for w in giustiRectangle:
-        if w['label'] == "word":
-            if w['id'] is None:
-                # found new word -> create
+    for item in selected:
+        if item.label == "word":
+            if item.group_id is None:
                 idx += 1
-                img = cv2.imread(imagepath)
-                crop_img = img[w['box'][1]:w['box'][3], w['box'][0]:w['box'][2]] if w['box'][1] <= w['box'][3] else img[w['box'][3]:w['box'][1], w['box'][2]:w['box'][0]]
-                #cv2.imshow("cropped", crop_img)
-                parola = {
-                    'box': w['box'],
-                    'text': ''.join(pytesseract.image_to_data(crop_img, output_type=Output.DICT, lang='ita')['text']),
-                    'id': str(idx),
-                    'link': w['link'],
-                    'label': w['label'],
-                }
-                #print("nuova parola trovata: " + parola['text'])
-                #print("id: " + parola['id'])
-                #cv2.waitKey(0)
-                aggiustati.append(parola)
-            for word in wordsRectangles:
-                if word['label']=="word":
+                item.group_id = str(idx)
+            img = cv2.imread(imagepath)
+            if item.points[0].y() <= item.points[1].y():
+                crop_img = img[int(item.points[0].y()):int(item.points[1].y()), int(item.points[0].x()):int(item.points[1].x())]
+            else:
+                img[int(item.points[1].y()):int(item.points[0].y()), int(item.points[1].x()):int(item.points[0].x())]
+            #cv2.imshow('crop',crop_img)
+            #cv2.waitKey(0)
+            item.text = ''.join(pytesseract.image_to_data(crop_img, output_type=Output.DICT, lang='ita')['text'])
+            '''parola = {
+                'box': w['box'],
+                'text': ''.join(pytesseract.image_to_data(crop_img, output_type=Output.DICT, lang='ita')['text']),
+                'id': str(idx),
+                'link': w['link'],
+                'label': w['label'],
+                #########################
+                'text': ''.join(pytesseract.image_to_data(crop_img, output_type=Output.DICT, lang='ita')['text']),
+                'label': "word",
+                'points': 1,  # [x1,y1][x2,y2]
+                'shape_type': "rectangle",
+                'group_id': str(idx),
+                'link': set(),
+                'flags': {},
+                'other_data': None,
+                
+            }'''
+            #aggiustati.append(parola)
+            '''for word in wordsRectangles:
+                if word['label'] == "word":
                     if word['id'] == w['id']:
                         if word['box'] != w['box']:
-                            # has different coordinates -> update
                             word['box'] = w['box']
                             img = cv2.imread(imagepath)
                             crop_img = img[w['box'][1]:w['box'][3], w['box'][0]:w['box'][2]] if w['box'][1] <= w['box'][3] else img[w['box'][3]:w['box'][1], w['box'][2]:w['box'][0]]
-                            # cv2.imshow("cropped", crop_img)
                             aggiusta = pytesseract.image_to_data(crop_img, output_type=Output.DICT, lang='ita')
-                            # print('vecchia: ' + word['text'])
                             word['text'] = ''.join(aggiusta['text'])
-                            # print('nuova: ' + word['text'])
-                            # print('id: ' + word['id'])
-                            # cv2.waitKey(0)
-                        aggiustati.append(word)
-    return aggiustati'''
+                        aggiustati.append(word)'''
+    #return aggiustati
 
 
 def generateJson(fileName, elements, destinationpath):
@@ -137,7 +127,6 @@ def infoWords(imageName):
     for i in range(total_boxes):
         if int(details['conf'][i]) > 0 and str(details['text'][i]) != ' ':  # excluding low confidence and empty words
             #global idx
-            idx += 1
             # coordinates format (left, top, left + width, top + height)
             coordinates = [details['left'][i], details['top'][i], details['width'][i] + details['left'][i],
                            details['height'][i] + details['top'][i]]
@@ -147,25 +136,30 @@ def infoWords(imageName):
                     '_') != "":
                 text = details['text'][i].strip('.')
                 # creating single box + text
+                idx += 1
                 word = {
-                    'box': coordinates,
                     'text': text,
-                    'id': str(idx),
                     'label': "word",
+                    'points': [[coordinates[0], coordinates[1]], [coordinates[2], coordinates[3]]],  # [x1,y1][x2,y2]
+                    'shape_type': "rectangle",
+                    'group_id': str(idx),
+                    'link': set(),
+                    'flags': {},
+                    'other_data': None,
                 }
                 words.append(word)
     return words
 
 
-def infoSentences(labelmepath, elements):
+def infoSentences(rectangles, words):
     infoRectangles = []
     global idx
 
     #generateGroupID(labelmepath)
-    with open(labelmepath) as json_file:
+    '''with open(labelmepath) as json_file:
         labelmeData = json.load(json_file)
-    fields = labelmeData['shapes']
-    for x in fields:
+    fields = labelmeData['shapes']'''
+    for x in rectangles:
         if x['group_id'] is None:
             idx += 1
         sentence = ""
@@ -180,7 +174,7 @@ def infoSentences(labelmepath, elements):
             'words': wordSentence
         }
         # grouping words in sentences
-        for i in elements:
+        for i in words:
             if infoRectangle['box'][0] < i['box'][0] and infoRectangle['box'][1] < i['box'][1] and infoRectangle['box'][2] > i['box'][2] and infoRectangle['box'][3] > i['box'][3]:
                 if (i['text'] != ""):
                     sentence += i['text'] + " "
