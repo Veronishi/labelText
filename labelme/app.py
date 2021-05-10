@@ -1358,8 +1358,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     flags=s.flags,
                 )
             )
-            if s.label == "word":
-                print(data)
             return data
 
         shapes = [format_shape(item.shape()) for item in self.labelList]
@@ -1465,8 +1463,9 @@ class MainWindow(QtWidgets.QMainWindow):
         selectedItemsText = self.labelListText.selectedItems()
         selectedItems = self.labelList.selectedItems()
         selected = self.canvas.selectedShapes
+        # no shape selected -> pytesseract on whole image
         if len(selected) == 0:
-            words = ground_truth.infoWords(self.imagePath, 0)
+            words = ground_truth.infoWords(self.imagePath, 0) # must start from 0 or else it will always add same rectangles on tesseract press
             shapes = []
             for word in words:
                 trovato = False
@@ -1477,8 +1476,14 @@ class MainWindow(QtWidgets.QMainWindow):
                 if not trovato:
                     shapes.append(word)
             self.loadLabels(shapes, False)
+        # shapes selected -> pytesseract on cropped images
         else:
-            ground_truth.adjuster(self.imagePath, selected, len(self.labelListText))
+            # cancello, buchi negli id? -> vedi id più grande
+            nWords = 0
+            for item in self.labelList:
+                if item.shape().label == "word" and item.shape().group_id != None and item.shape().group_id > nWords:
+                    nWords = item.shape().group_id
+            ground_truth.adjuster(self.imagePath, selected, nWords)
 
         words = []
         sentences = []
@@ -1487,13 +1492,18 @@ class MainWindow(QtWidgets.QMainWindow):
                 words.append(item.shape())
             else:
                 sentences.append(item.shape())
-
-        ground_truth.infoSentences(sentences, words, 0)
+        # update sentences
+        nSentences = 0
+        for item in self.labelList:
+            if item.shape().label != "word" and item.shape().group_id != None : nSentences += 1
+        ground_truth.infoSentences(sentences, words, nSentences)
+        # update items in Text & Link widget
         for item in self.labelListText:
             if item.shape().link == set():
                 item.setText("{} " + item.shape().text)
             else:
                 item.setText("{} {}".format(item.shape().link, item.shape().text))
+        # update items in Polygon Labels widget
         for item in self.labelList:
             rgb = self._get_rgb_by_label(item.shape().label)
             r, g, b = rgb
