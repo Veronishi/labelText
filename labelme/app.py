@@ -1346,7 +1346,7 @@ class MainWindow(QtWidgets.QMainWindow):
         lf = LabelFile()
 
         def format_shape(s):
-            data = s.other_data.copy()
+            data = s.other_data.copy() if s.other_data != None else {}
             data.update(
                 dict(
                     text=s.text.encode("utf-8") if PY2 else s.text,
@@ -1358,6 +1358,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     flags=s.flags,
                 )
             )
+            if s.label == "word":
+                print(data)
             return data
 
         shapes = [format_shape(item.shape()) for item in self.labelList]
@@ -1476,8 +1478,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     shapes.append(word)
             self.loadLabels(shapes, False)
         else:
-            nWords = sum(map(lambda item : item.shape().label == "word" and item.shape().group_id != None, self.labelListText))
-            ground_truth.adjuster(self.imagePath, selected, nWords)
+            ground_truth.adjuster(self.imagePath, selected, len(self.labelListText))
 
         words = []
         sentences = []
