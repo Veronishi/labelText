@@ -22,6 +22,9 @@ from labelme import __appname__
 from labelme import PY2
 from labelme import QT5
 
+from labelme.annotations_file import AnnotationFile
+from labelme.annotations_file import AnnotationFileError
+
 from . import utils
 from labelme.config import get_config
 from labelme.label_file import LabelFile
@@ -290,6 +293,15 @@ class MainWindow(QtWidgets.QMainWindow):
             shortcuts["save_as"],
             "save-as",
             self.tr("Save labels to a different file"),
+            enabled=False,
+        )
+
+        saveAnnotations = action(
+            self.tr("&Save annotations"),
+            self.saveAnnotationsJson,
+            None,
+            "save-as",
+            self.tr("Save annotations json"),
             enabled=False,
         )
 
@@ -625,6 +637,7 @@ class MainWindow(QtWidgets.QMainWindow):
             changeOutputDir=changeOutputDir,
             save=save,
             saveAs=saveAs,
+            saveAnnotations=saveAnnotations,
             open=open_,
             close=close,
             deleteFile=deleteFile,
@@ -699,6 +712,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 editMode,
                 brightnessContrast,
                 pytesseract,
+                saveAnnotations,
             ),
             onShapesPresent=(saveAs, hideAll, showAll),
         )
@@ -795,6 +809,7 @@ class MainWindow(QtWidgets.QMainWindow):
             zoom,
             fitWidth,
             pytesseract,
+            saveAnnotations,
         )
 
         self.statusBar().showMessage(self.tr("%s started.") % __appname__)
@@ -1393,6 +1408,58 @@ class MainWindow(QtWidgets.QMainWindow):
             # disable allows next and previous image to proceed
             # self.filename = filename
             return True
+        except AnnotationFile as e:
+            self.errorMessage(
+                self.tr("Error saving label data"), self.tr("<b>%s</b>") % e
+            )
+            return False
+
+    def saveAnnotations(self, filename):
+        af = AnnotationFile()
+
+        def format_shape(s):
+            data = {}
+            words = []
+            for item in s.words:
+                words.append(
+                    dict(
+                        text=item.text.encode("utf-8") if PY2 else item.text,
+                        label=item.label.encode("utf-8") if PY2 else item.label,
+                        box=[int(item.points[0].x()), int(item.points[0].y()), int(item.points[1].x()), int(item.points[1].y())],
+                    )
+                )
+            print(words)
+            data.update(
+                text=s.text.encode("utf-8") if PY2 else s.text,
+                label=s.label.encode("utf-8") if PY2 else s.label,
+                box=[int(s.points[0].x()), int(s.points[0].y()), int(s.points[1].x()), int(s.points[1].y())],
+                group_id=s.group_id,
+                link=list(s.link) if s.link != None else [],
+                words = words,
+            )
+            return data
+
+        shapes = [format_shape(item.shape()) for item in self.labelList if item.shape().label != "word"]
+        try:
+            imagePath = osp.relpath(self.imagePath, osp.dirname(filename))
+            imageData = self.imageData if self._config["store_data"] else None
+            if osp.dirname(filename) and not osp.exists(osp.dirname(filename)):
+                os.makedirs(osp.dirname(filename))
+            af.save(
+                filename=filename,
+                shapes=shapes,
+            )
+            #self.labelFile = af
+            items = self.fileListWidget.findItems(
+                self.imagePath, Qt.MatchExactly
+            )
+            if len(items) > 0:
+                if len(items) != 1:
+                    raise RuntimeError("There are duplicate files.")
+                items[0].setCheckState(Qt.Checked)
+            # disable allows next and previous image to proceed
+            # self.filename = filename
+            return True
         except LabelFileError as e:
             self.errorMessage(
                 self.tr("Error saving label data"), self.tr("<b>%s</b>") % e
@@ -1463,8 +1530,8 @@ class MainWindow(QtWidgets.QMainWindow):
         selectedItemsText = self.labelListText.selectedItems()
         selectedItems = self.labelList.selectedItems()
         selected = self.canvas.selectedShapes
-        # no shape selected -> pytesseract on whole image
         if len(selected) == 0:
+            # no shape selected -> pytesseract on whole image
             words = ground_truth.infoWords(self.imagePath, 0) # must start from 0 or else it will always add same rectangles on tesseract press
             shapes = []
             for word in words:
@@ -1476,9 +1543,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 if not trovato:
                     shapes.append(word)
             self.loadLabels(shapes, False)
-        # shapes selected -> pytesseract on cropped images
         else:
-            # cancello, buchi negli id? -> vedi id più grande
+            # shapes selected -> pytesseract on cropped images
             nWords = 0
             for item in self.labelList:
                 if item.shape().label == "word" and item.shape().group_id != None and item.shape().group_id > nWords:
@@ -1977,6 +2043,10 @@ class MainWindow(QtWidgets.QMainWindow):
         assert not self.image.isNull(), "cannot save empty image"
         self._saveFile(self.saveFileDialog())
 
+    def saveAnnotationsJson(self, _value=False):
+        assert  not self.image.isNull(), "cannot save empty image"
+        self._saveAnnotations(self.saveFileDialog())
+
     def saveFileDialog(self):
         caption = self.tr("%s - Choose File") % __appname__
         filters = self.tr("Label files (*%s)") % LabelFile.suffix
@@ -2013,6 +2083,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _saveFile(self, filename):
         if filename and self.saveLabels(filename):
+            self.addRecentFile(filename)
+            self.setClean()
+
+    def _saveAnnotations(self, filename):
+        if filename and self.saveAnnotations(filename):
             self.addRecentFile(filename)
             self.setClean()
 

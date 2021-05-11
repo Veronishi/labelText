@@ -25,3 +25,5 @@ del sys
 from labelme.label_file import LabelFile
 from labelme import testing
 from labelme import utils
+
+from labelme.annotations_file import AnnotationFile

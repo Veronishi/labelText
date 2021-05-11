@@ -53,6 +53,7 @@ class Shape(object):
         shape_type=None,
         flags=None,
         group_id=None,
+        words=None,
     ):
         self.text = text
         self.label = label
@@ -64,6 +65,7 @@ class Shape(object):
         self.shape_type = shape_type
         self.flags = flags
         self.other_data = {}
+        self.words = words
 
         self._highlightIndex = None
         self._highlightMode = self.NEAR_VERTEX
@@ -286,6 +288,9 @@ class Shape(object):
 
     def copy(self):
         return copy.deepcopy(self)
+
+    def setWords(self, words):
+        self.words = words
 
     def __len__(self):
         return len(self.points)

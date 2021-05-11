@@ -5,40 +5,8 @@ Created on 9 mar 2021
 '''
 import pytesseract
 import cv2
-import json
-import os
 from pytesseract import Output
 
-
-def generateLabelmeData(labelmepath, elements, considerLabelme):
-    # generate a compatible labelme json
-    #removeNull(labelmepath)
-    with open(labelmepath) as json_file:
-        labelmeData = json.load(json_file)
-    rectangles = labelmeData
-    if not considerLabelme:
-        rectangles['shapes'] = []
-    for z in elements:
-        elementCompatible = {
-            'text': z['text'],
-            'label': z['label'],
-            'points': [[z['box'][0], z['box'][1]], [z['box'][2], z['box'][3]]],
-            'shape_type': "rectangle",
-            'flags': {},
-            'group_id': z['id'],
-            'link': [],
-        }
-        rectangles['shapes'].append(elementCompatible)
-    return rectangles
-
-def generateJson(fileName, elements, destinationpath):
-    # code to get right path for json files
-    namefileWithExtension = os.path.split(fileName)[1]  # file name with extension .png
-    namefile = os.path.splitext(namefileWithExtension)[0]  # only file name
-    annotationFileName = os.path.join(destinationpath, namefile + '.json')  # path destinationpath/nameFile.json
-    with open(annotationFileName, 'w', encoding='utf8') as outfile:
-        json.dump(elements, outfile, ensure_ascii=False, indent=4)
-    print("generated: " + annotationFileName)
 
 def adjuster(imagepath, selected, idx):
     for item in selected:
@@ -119,5 +87,6 @@ def infoSentences(rectangles, words, idx):
         if sentence != "" and sentence != ".":
             infoRectangle['text'] = sentence.strip()
             rectangle.text = sentence.strip()
+        rectangle.setWords(wordSentence)
 
 # TODO: code optimization and documentation
