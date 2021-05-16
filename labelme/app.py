@@ -148,7 +148,7 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         self.shape_dock.setObjectName("Labels")
         self.shape_dock.setWidget(self.labelList)
-####################################################################################################
+
         self.labelListText = LabelListTextWidget()
         self.labelListText.itemSelectionChanged.connect(self.labelTextSelectionChanged)
         self.labelListText.itemDoubleClicked.connect(self.editLabelText)
@@ -159,7 +159,7 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         self.text_dock.setObjectName("Texts")
         self.text_dock.setWidget(self.labelListText)
-####################################################################################################
+
         self.uniqLabelList = UniqueLabelQListWidget()
         self.uniqLabelList.setToolTip(
             self.tr(
@@ -1428,7 +1428,6 @@ class MainWindow(QtWidgets.QMainWindow):
                         box=[int(item.points[0].x()), int(item.points[0].y()), int(item.points[1].x()), int(item.points[1].y())],
                     )
                 )
-            print(words)
             data.update(
                 text=s.text.encode("utf-8") if PY2 else s.text,
                 label=s.label.encode("utf-8") if PY2 else s.label,
