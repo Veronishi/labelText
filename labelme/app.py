@@ -10,7 +10,7 @@ import webbrowser
 import cv2
 import pytesseract
 from pytesseract import Output
-from utils import ground_truth
+from labelme.utils import ground_truth
 
 import imgviz
 from qtpy import QtCore
@@ -25,7 +25,7 @@ from labelme import QT5
 from labelme.annotations_file import AnnotationFile
 from labelme.annotations_file import AnnotationFileError
 
-from . import utils
+from labelme import utils
 from labelme.config import get_config
 from labelme.label_file import LabelFile
 from labelme.label_file import LabelFileError

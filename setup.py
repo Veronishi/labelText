@@ -36,7 +36,7 @@ def get_install_requires():
         "PyYAML",
         "qtpy",
         "termcolor",
-        "opencv-python",
+        "opencv-python<=4.1.2.30",
         "pytesseract",
     ]
 
@@ -129,7 +129,7 @@ def main():
         long_description_content_type="text/markdown",
         author="Kentaro Wada",
         author_email="www.kentaro.wada@gmail.com",
-        url="https://github.com/wkentaro/labelme",
+        url="https://github.com/Veronishi/labelmePyCharm",
         install_requires=get_install_requires(),
         license="GPLv3",
         keywords="Image Annotation, Machine Learning",
