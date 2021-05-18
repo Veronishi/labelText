@@ -68,6 +68,8 @@ There are options:
 - Platform specific installation: [Ubuntu](#ubuntu), [macOS](#macos), [Windows](#windows)
 - Pre-build binaries from [the release section](https://github.com/wkentaro/labelme/releases)
 
+If you want to develop follow this [guide](DEV.md). 
+
 ### Anaconda
 
 You need install [Anaconda](https://www.continuum.io/downloads), then run below:
