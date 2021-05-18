@@ -3,7 +3,10 @@
 ## Install lib
 
 ```
+# install
 python setup.py install
+# run
+labelme
 ```
 
 ## Release windows
