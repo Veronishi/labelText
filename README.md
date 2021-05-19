@@ -14,7 +14,7 @@
 </div>
 
 <div align="center">
-  <a href="#installation"><b>Tutorial</b></a> |
+  <a href="#tutorial"><b>Tutorial</b></a> |
   <a href="#installation"><b>Installation</b></a> |
   <a href="#usage"><b>Usage</b></a> |
   <a href="https://github.com/wkentaro/labelme/tree/master/examples/tutorial#tutorial-single-image-example"><b>Install Tutorial</b></a> |

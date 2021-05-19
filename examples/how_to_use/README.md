@@ -1,9 +1,9 @@
-# How to use it
- 1. Create your sentence label
- 2. Use Tesseract button to detect words
- 3. If needed, adjust words' text manually
- 4. Add linking manually
- 5. Save your JSON annotation
+# How to use it 
+ 1. [Create your sentence label](#create-your-sentence-label)
+ 2. [Use Tesseract button to detect words](#use-tesseract-button)
+ 3. [If needed, adjust words' text manually](#manual-adjustment)
+ 4. [Add linking manually](#manual-linking )
+ 5. [Save your JSON annotation](#save-annotations)
 
 ## Create your sentence label
 A sentence label is a rectangle that contains a sentence and has a label (such as question, answer, ... ).  
