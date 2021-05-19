@@ -14,9 +14,10 @@
 </div>
 
 <div align="center">
+  <a href="#installation"><b>Tutorial</b></a> |
   <a href="#installation"><b>Installation</b></a> |
   <a href="#usage"><b>Usage</b></a> |
-  <a href="https://github.com/wkentaro/labelme/tree/master/examples/tutorial#tutorial-single-image-example"><b>Tutorial</b></a> |
+  <a href="https://github.com/wkentaro/labelme/tree/master/examples/tutorial#tutorial-single-image-example"><b>Install Tutorial</b></a> |
   <a href="https://github.com/wkentaro/labelme/tree/master/examples"><b>Examples</b></a> |
   <a href="https://www.youtube.com/playlist?list=PLI6LvFw0iflh3o33YYnVIfOpaO0hc5Dzw"><b>Youtube FAQ</b></a>
 </div>
@@ -32,15 +33,12 @@
 Labelme is a graphical image annotation tool inspired by <http://labelme.csail.mit.edu>.  
 It is written in Python and uses Qt for its graphical interface.
 
-<img src="examples/instance_segmentation/data_dataset_voc/JPEGImages/2011_000006.jpg" width="19%" /> <img src="examples/instance_segmentation/data_dataset_voc/SegmentationClassPNG/2011_000006.png" width="19%" /> <img src="examples/instance_segmentation/data_dataset_voc/SegmentationClassVisualization/2011_000006.jpg" width="19%" /> <img src="examples/instance_segmentation/data_dataset_voc/SegmentationObjectPNG/2011_000006.png" width="19%" /> <img src="examples/instance_segmentation/data_dataset_voc/SegmentationObjectVisualization/2011_000006.jpg" width="19%" />  
-<i>VOC dataset example of instance segmentation.</i>
+Labelme is an image annotation tool suitable for creation of ground truth for an image dataset.   
+It's a customized version of [Labelme](https://github.com/wkentaro/labelme).
 
-<img src="examples/semantic_segmentation/.readme/annotation.jpg" width="30%" /> <img src="examples/bbox_detection/.readme/annotation.jpg" width="30%" /> <img src="examples/classification/.readme/annotation_cat.jpg" width="35%" />  
-<i>Other examples (semantic segmentation, bbox detection, and classification).</i>
+## Tutorial
 
-<img src="https://user-images.githubusercontent.com/4310419/47907116-85667800-de82-11e8-83d0-b9f4eb33268f.gif" width="30%" /> <img src="https://user-images.githubusercontent.com/4310419/47922172-57972880-deae-11e8-84f8-e4324a7c856a.gif" width="30%" /> <img src="https://user-images.githubusercontent.com/14256482/46932075-92145f00-d080-11e8-8d09-2162070ae57c.png" width="32%" />  
-<i>Various primitives (polygon, rectangle, circle, line, and point).</i>
-
+If you want detailed instructions on how to use Labelme go [here](examples/how_to_use).
 
 ## Features
 
@@ -50,7 +48,8 @@ It is written in Python and uses Qt for its graphical interface.
 - [x] GUI customization (predefined labels / flags, auto-saving, label validation, etc). ([#144](https://github.com/wkentaro/labelme/pull/144))
 - [x] Exporting VOC-format dataset for semantic/instance segmentation. ([semantic segmentation](examples/semantic_segmentation), [instance segmentation](examples/instance_segmentation))
 - [x] Exporting COCO-format dataset for instance segmentation. ([instance segmentation](examples/instance_segmentation))
-
+- [x] Text auto-detection with Tesseract
+- [x] Save annotations in JSON
 
 
 ## Requirements
@@ -58,6 +57,8 @@ It is written in Python and uses Qt for its graphical interface.
 - Ubuntu / macOS / Windows
 - Python2 / Python3
 - [PyQt4 / PyQt5](http://www.riverbankcomputing.co.uk/software/pyqt/intro)
+- [Tesseract](https://pypi.org/project/pytesseract/)
+- [opencv](https://pypi.org/project/opencv-python/)
 
 
 ## Installation
