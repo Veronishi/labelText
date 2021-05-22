@@ -37,14 +37,18 @@ It's suggested to use Tesseract on the whole image for the first time.
 Then if some words aren't detected add a rectangle labeled _word_ and click Tesseract on the new rectangle while selected.
 If some words are detected but have wrong text try Tesseract only on the selected rectangle.  
 ![](images/tesseract_before.png)
+![](images/tesseract_before_detail.png)  
 ![](images/tesseract_after.png)
+![](images/tesseract_after_detail.png)  
 If Tesseract detect some text that shouldn't, just delete the polygon.  
 
 >**_Tip:_** be sure all rectangle words are contained in your sentence label otherwise they will not be included in the sentence text.  
 > _Before adjustment:_
-> ![](images/wrong_bbox.png) 
+> ![](images/wrong_bbox.png)
+> ![](images/wrong_bbox_detail.png)
 > _After:_
 > ![](images/right_bbox.png)
+> ![](images/right_bbox_detail.png)
 
 ## Manual adjustment
 Sometimes Labelme's Tesseract does not detect some words.  
