@@ -7,13 +7,13 @@
 
 ## Create your sentence label
 A sentence label is a rectangle that contains a sentence and has a label (such as question, answer, ... ).  
-With these Labelme will be able to group words into sentences.
+With these Labelme will be able to group words into sentences.  
 
-To create a Rectangle go on top menu then _edit_ then _create rectangle_ or use shortcut Ctrl+R.
+To create a Rectangle go on top menu then _edit_ then _create rectangle_ or use shortcut Ctrl+R.  
 ![](images/create_rectangle.png)
 
-While in create mode you can't select polygons.  
-To go in selection mode go on top menu  then _edit_ than _edit polygons_ or press Ctrl+J.
+While in create mode, you can't select polygons.  
+To go in selection mode go on top menu  then _edit_ than _edit polygons_ or press Ctrl+J.  
 ![](images/edit_polygons.png)
 
 >**_Tip:_** make sure to do this passage before you use the tesseract button.  
@@ -28,10 +28,8 @@ You can find this button on left menu.
 ![](images/tesseract.png)
 
 There are two modes for this button:
- * if there aren't selected polygons, Tesseract will run on the whole 
-   image and detect every word
- * else it will use Tesseract on a cropped portion of your image corresponding to 
-   every selected polygon
+ * if there aren't selected polygons, Tesseract will run on the whole image and detect every word
+ * else it will use Tesseract on a cropped portion of your image corresponding to every selected polygon
 
 It's suggested to use Tesseract on the whole image for the first time.  
 ![](images/tesseract_whole.png)
@@ -40,7 +38,7 @@ Then if some words aren't detected add a rectangle labeled _word_ and click Tess
 If some words are detected but have wrong text try Tesseract only on the selected rectangle.  
 ![](images/tesseract_before.png)
 ![](images/tesseract_after.png)
-If Tesseract detect some text that shouldn't, just delete the polygon.
+If Tesseract detect some text that shouldn't, just delete the polygon.  
 
 >**_Tip:_** be sure all rectangle words are contained in your sentence label otherwise they will not be included in the sentence text.  
 > _Before adjustment:_
