@@ -1,8 +1,17 @@
 # Dev instruction
 
+1. Install [python](https://www.python.org/downloads/)
+2. Install [conda](https://docs.conda.io/en/latest/) or [pip](https://pip.pypa.io/en/stable/installing/)
+3. Use conda env or virtualenv
+
+
 ## Install lib
 
 ```
+# download the code
+git clone https://github.com/Veronishi/labelText.git
+#go in labelText folder
+cd labelText
 # install
 python setup.py install
 # run

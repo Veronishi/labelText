@@ -3,11 +3,11 @@
 </h1>
 
 <h4 align="center">
-  Image Polygonal Annotation for text with Python
+  Image Polygonal Annotation with Python
 </h4>
 
 <div align="center">
-  <a href="https://img.shields.io/pypi/pyversions/labelme.svg"><img src="https://img.shields.io/pypi/pyversions/labelme.svg"></a>
+  <a href="https://img.shields.io/badge/python-2.7%20%7C%203.5%20%7C%203.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue"><img src="https://img.shields.io/badge/python-2.7%20%7C%203.5%20%7C%203.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue "></a>
 </div>
 
 <div align="center">
@@ -24,8 +24,8 @@
 
 ## Description
 
-LabelText is an image annotation tool suitable for creation of ground truth for an image dataset.   
-It's a customized version of [Labelme](https://github.com/wkentaro/labelme).  
+LabelText is an image annotation tool suitable for creation of ground truth for an image dataset for example OCR, segmentation, detection, classification, ...   
+It's a fork of [Labelme](https://github.com/wkentaro/labelme).  
 
 Labelme is a graphical image annotation tool inspired by <http://labelme.csail.mit.edu>.  
 It is written in Python and uses Qt for its graphical interface.
@@ -79,11 +79,12 @@ labelme
 ```
 
 #### Pip
-2.  Install the software:
+2. Install [pip](https://pip.pypa.io/en/stable/installing/)
+3.  Install the software:
 ```bash
 pip install https://github.com/Veronishi/labelText/releases/download/v4.5.8/labelme-4.5.8-py3-none-any.whl
 ```
-3. run with:
+4. run with:
 ```bash
 labelme
 ```
@@ -137,19 +138,6 @@ For more advanced usage, please refer to the examples:
 - **How to get annotations for semantic segmentation?** See [examples/semantic_segmentation](examples/semantic_segmentation).
 - **How to get annotations for instance segmentation?** See [examples/instance_segmentation](examples/instance_segmentation).
 
-## Developing
-
-```bash
-git clone https://github.com/Veronishi/labelText.git
-cd labelme
-
-# Install anaconda3 and labelme
-curl -L https://github.com/wkentaro/dotfiles/raw/master/local/bin/install_anaconda3.sh | bash -s .
-source .anaconda3/bin/activate
-pip install -e .
-```
-
-
 ## How to build standalone executable
 
 Below shows how to build the standalone executable on macOS, Linux and Windows.  
@@ -171,10 +159,10 @@ dist/labelme --version
 If you use this project in your research or wish to refer to the baseline results published in the README, please use the following BibTeX entry.
 
 ```bash
-@misc{labelme2016,
-  author =       {Kentaro Wada},
-  title =        {{labelme: Image Polygonal Annotation with Python}},
-  howpublished = {\url{https://github.com/wkentaro/labelme}},
-  year =         {2016}
+@misc{labelText,
+  author =       {Venturino Veronika},
+  title =        {{LabelText : un tool per la creazione di dataset di immagini con groundtruth}},
+  howpublished = {\url{https://link.pdf}},
+  year =         {2021}
 }
 ```
