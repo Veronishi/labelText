@@ -14,8 +14,8 @@
   <a href="#tutorial"><b>Tutorial</b></a> |
   <a href="#installation"><b>Installation</b></a> |
   <a href="#usage"><b>Usage</b></a> |
-  <a href="https://github.com/wkentaro/labelme/tree/master/examples/tutorial#tutorial-single-image-example"><b>Advanced Tutorial</b></a> |
-  <a href="https://github.com/wkentaro/labelme/tree/master/examples"><b>Examples</b></a> |
+  <a href="https://github.com/Veronishi/labelText/tree/master/examples/tutorial#tutorial-single-image-example"><b>Advanced Tutorial</b></a> |
+  <a href="https://github.com/Veronishi/labelText/tree/master/examples"><b>Examples</b></a> |
   <a href="https://www.youtube.com/playlist?list=PLI6LvFw0iflh3o33YYnVIfOpaO0hc5Dzw"><b>Youtube FAQ</b></a>
 </div>
 
@@ -60,6 +60,33 @@ Installation for Windows:
 [click here to download .exe](https://github.com/Veronishi/labelmePyCharm/releases/download/v4.5.8/labelme-4.5.8.win-amd64.exe)
 
 Installation for other OS:  
+
+1. Install [python](https://www.python.org/downloads/)  
+#### Conda
+2. Install [conda](https://docs.conda.io/en/latest/)
+3. If you need create a conda env:
+```bash
+conda create --name myenv
+conda activate myenv
+```
+4.  Install the software:
+```bash
+conda install https://github.com/Veronishi/labelText/releases/download/v4.5.8/labelme-4.5.8-py3-none-any.whl
+```
+5. run with:
+```bash
+labelme
+```
+
+#### Pip
+2.  Install the software:
+```bash
+pip install https://github.com/Veronishi/labelText/releases/download/v4.5.8/labelme-4.5.8-py3-none-any.whl
+```
+3. run with:
+```bash
+labelme
+```
 
 
 ## Installation for DEV
