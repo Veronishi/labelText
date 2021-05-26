@@ -1,16 +1,13 @@
 <h1 align="center">
-  <img src="labelme/icons/icon.png"><br/>labelme
+  <img src="labelme/icons/icon.png"><br/>LabelText
 </h1>
 
 <h4 align="center">
-  Image Polygonal Annotation with Python
+  Image Polygonal Annotation for text with Python
 </h4>
 
 <div align="center">
-  <a href="https://pypi.python.org/pypi/labelme"><img src="https://img.shields.io/pypi/v/labelme.svg"></a>
-  <a href="https://pypi.org/project/labelme"><img src="https://img.shields.io/pypi/pyversions/labelme.svg"></a>
-  <a href="https://github.com/wkentaro/labelme/actions"><img src="https://github.com/wkentaro/labelme/workflows/ci/badge.svg?branch=master&event=push"></a>
-  <a href="https://hub.docker.com/r/wkentaro/labelme"><img src="https://img.shields.io/docker/cloud/build/wkentaro/labelme"></a>
+  <a href="https://img.shields.io/pypi/pyversions/labelme.svg"><img src="https://img.shields.io/pypi/pyversions/labelme.svg"></a>
 </div>
 
 <div align="center">
@@ -24,17 +21,14 @@
 
 <br/>
 
-<div align="center">
-  <img src="examples/instance_segmentation/.readme/annotation.jpg" width="70%">
-</div>
 
 ## Description
 
+LabelText is an image annotation tool suitable for creation of ground truth for an image dataset.   
+It's a customized version of [Labelme](https://github.com/wkentaro/labelme).  
+
 Labelme is a graphical image annotation tool inspired by <http://labelme.csail.mit.edu>.  
 It is written in Python and uses Qt for its graphical interface.
-
-Labelme is an image annotation tool suitable for creation of ground truth for an image dataset.   
-It's a customized version of [Labelme](https://github.com/wkentaro/labelme).
 
 ## Tutorial
 
@@ -60,99 +54,17 @@ If you want detailed instructions on how to use Labelme go [here](examples/how_t
 - [Tesseract](https://pypi.org/project/pytesseract/)
 - [opencv](https://pypi.org/project/opencv-python/)
 
-
 ## Installation
 
-There are options:
+Installation for Windows:  
+[click here to download .exe](https://github.com/Veronishi/labelmePyCharm/releases/download/v4.5.8/labelme-4.5.8.win-amd64.exe)
 
-- Platform agnostic installation: [Anaconda](#anaconda), [Docker](#docker)
-- Platform specific installation: [Ubuntu](#ubuntu), [macOS](#macos), [Windows](#windows)
-- Pre-build binaries from [the release section](https://github.com/wkentaro/labelme/releases)
+Installation for other OS:  
 
-If you want to develop follow this [guide](DEV.md). 
 
-### Anaconda
+## Installation for DEV
 
-You need install [Anaconda](https://www.continuum.io/downloads), then run below:
-
-```bash
-# python2
-conda create --name=labelme python=2.7
-source activate labelme
-# conda install -c conda-forge pyside2
-conda install pyqt
-pip install labelme
-# if you'd like to use the latest version. run below:
-# pip install git+https://github.com/wkentaro/labelme.git
-
-# python3
-conda create --name=labelme python=3.6
-source activate labelme
-# conda install -c conda-forge pyside2
-# conda install pyqt
-# pip install pyqt5  # pyqt5 can be installed via pip on python3
-pip install labelme
-# or you can install everything by conda command
-# conda install labelme -c conda-forge
-```
-
-### Docker
-
-You need install [docker](https://www.docker.com), then run below:
-
-```bash
-# on macOS
-socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\" &
-docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=docker.for.mac.host.internal:0 -v $(pwd):/root/workdir wkentaro/labelme
-
-# on Linux
-xhost +
-docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=:0 -v $(pwd):/root/workdir wkentaro/labelme
-```
-
-### Ubuntu
-
-```bash
-# Ubuntu 14.04 / Ubuntu 16.04
-# Python2
-# sudo apt-get install python-qt4  # PyQt4
-sudo apt-get install python-pyqt5  # PyQt5
-sudo pip install labelme
-# Python3
-sudo apt-get install python3-pyqt5  # PyQt5
-sudo pip3 install labelme
-
-# or install standalone executable from:
-# https://github.com/wkentaro/labelme/releases
-```
-
-### Ubuntu 19.10+ / Debian (sid)
-
-```bash
-sudo apt-get install labelme
-```
-
-### macOS
-
-```bash
-# macOS Sierra
-brew install pyqt  # maybe pyqt5
-pip install labelme  # both python2/3 should work
-
-# or install standalone executable/app from:
-# https://github.com/wkentaro/labelme/releases
-```
-
-### Windows
-
-Install [Anaconda](https://www.continuum.io/downloads), then in an Anaconda Prompt run:
-
-```bash
-# python3
-conda create --name=labelme python=3.6
-conda activate labelme
-pip install labelme
-```
+Go [here](DEV.md) if you are a developer.
 
 
 ## Usage
@@ -198,20 +110,10 @@ For more advanced usage, please refer to the examples:
 - **How to get annotations for semantic segmentation?** See [examples/semantic_segmentation](examples/semantic_segmentation).
 - **How to get annotations for instance segmentation?** See [examples/instance_segmentation](examples/instance_segmentation).
 
-
-## Testing
-
-```bash
-pip install hacking pytest pytest-qt
-flake8 .
-pytest -v tests
-```
-
-
 ## Developing
 
 ```bash
-git clone https://github.com/wkentaro/labelme.git
+git clone https://github.com/Veronishi/labelText.git
 cd labelme
 
 # Install anaconda3 and labelme
@@ -236,27 +138,6 @@ pip install pyinstaller
 pyinstaller labelme.spec
 dist/labelme --version
 ```
-
-
-## How to contribute
-
-Make sure below test passes on your environment.  
-See `.github/workflows/ci.yml` for more detail.
-
-```bash
-pip install black hacking pytest pytest-qt
-
-flake8 .
-black --line-length 79 --check labelme/
-MPLBACKEND='agg' pytest tests/ -m 'not gpu'
-```
-
-
-## Acknowledgement
-
-This repo is the fork of [mpitid/pylabelme](https://github.com/mpitid/pylabelme),
-whose development has already stopped.
-
 
 ## Cite This Project
 

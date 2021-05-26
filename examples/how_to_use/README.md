@@ -7,7 +7,7 @@
 
 ## Create your sentence label
 A sentence label is a rectangle that contains a sentence and has a label (such as question, answer, ... ).  
-With these Labelme will be able to group words into sentences.  
+With these LabelText will be able to group words into sentences.  
 
 To create a Rectangle go on top menu then _edit_ then _create rectangle_ or use shortcut Ctrl+R.  
 
@@ -66,14 +66,14 @@ If Tesseract detect some text that shouldn't, just delete the polygon.
 > ![](images/right_bbox_detail.png)
 
 ## Manual adjustment
-Sometimes Labelme's Tesseract does not detect some words.  
+Sometimes LabelText's Tesseract does not detect some words.  
 If you get the wrong text even after you use the Tesseract button on a selected polygon, you'll need to adjust it by hand.  
 To edit text double click on an item in Text and Link widget or right click then _edit label text_.  
 
 ![](images/edit_text.png)
 
 ## Manual linking 
-With Labelme you can link some polygons.  
+With LabelText you can link some polygons.  
 For example if you have a question label maybe you want to link it to the corresponding answer.  
 To do so select your rectangles then click on top menu _Link_ then _Link_ or use Ctrl+L shortcut. 
 
