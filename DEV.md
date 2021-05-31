@@ -15,7 +15,7 @@ cd labelText
 # install
 python setup.py install
 # run
-labelme
+labeltext
 ```
 
 ## Release windows

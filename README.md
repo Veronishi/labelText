@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="labelme/icons/icon.png"><br/>LabelText
+  LabelText
 </h1>
 
 <h4 align="center">
@@ -62,6 +62,7 @@ Installation for Windows:
 Installation for other OS:  
 
 1. Install [python](https://www.python.org/downloads/)  
+2. Follow steps for [Conda](#conda) or [Pip](#pip)
 #### Conda
 2. Install [conda](https://docs.conda.io/en/latest/)
 3. If you need create a conda env:
@@ -71,11 +72,11 @@ conda activate myenv
 ```
 4.  Install the software:
 ```bash
-conda install https://github.com/Veronishi/labelText/releases/download/v4.5.8/labelme-4.5.8-py3-none-any.whl
+pip install https://github.com/Veronishi/labelText/releases/download/v4.5.8/labelme-4.5.8-py3-none-any.whl
 ```
 5. run with:
 ```bash
-labelme
+labeltext
 ```
 
 #### Pip
@@ -86,7 +87,7 @@ pip install https://github.com/Veronishi/labelText/releases/download/v4.5.8/labe
 ```
 4. run with:
 ```bash
-labelme
+labeltext
 ```
 
 
