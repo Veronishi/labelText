@@ -57,7 +57,7 @@ If you want detailed instructions on how to use Labelme go [here](examples/how_t
 ## Installation
 
 Installation for Windows:  
-[click here to download .exe](https://github.com/Veronishi/labelText/releases/download/v4.5.8/labeltext-4.5.8.win-amd64.exe)
+[click here to download .exe](https://github.com/Veronishi/labelText/releases/download/v4.6/labeltext-4.6.win-amd64.exe)
 
 Installation for other OS:  
 
@@ -72,7 +72,7 @@ conda activate myenv
 ```
 4.  Install the software:
 ```bash
-pip install https://github.com/Veronishi/labelText/releases/download/v4.5.8/labelme-4.5.8-py3-none-any.whl
+conda install https://github.com/Veronishi/labelText/releases/download/v4.6/labeltext-4.6-py3-none-any.whl
 ```
 5. run with:
 ```bash
@@ -83,7 +83,7 @@ labeltext
 2. Install [pip](https://pip.pypa.io/en/stable/installing/)
 3.  Install the software:
 ```bash
-pip install https://github.com/Veronishi/labelText/releases/download/v4.5.8/labelme-4.5.8-py3-none-any.whl
+pip install https://github.com/Veronishi/labelText/releases/download/v4.6/labeltext-4.6-py3-none-any.whl
 ```
 4. run with:
 ```bash
@@ -98,24 +98,10 @@ Go [here](DEV.md) if you are a developer.
 
 ## Usage
 
-Run `labelme --help` for detail.  
 The annotations are saved as a [JSON](http://www.json.org/) file.
 
 ```bash
-labelme  # just open gui
-
-# tutorial (single image example)
-cd examples/tutorial
-labelme apc2016_obj3.jpg  # specify image file
-labelme apc2016_obj3.jpg -O apc2016_obj3.json  # close window after the save
-labelme apc2016_obj3.jpg --nodata  # not include image data but relative image path in JSON file
-labelme apc2016_obj3.jpg \
-  --labels highland_6539_self_stick_notes,mead_index_cards,kong_air_dog_squeakair_tennis_ball  # specify label list
-
-# semantic segmentation example
-cd examples/semantic_segmentation
-labelme data_annotated/  # Open directory to annotate all images in it
-labelme data_annotated/ --labels labels.txt  # specify label list with a file
+labeltext  # just open gui
 ```
 
 For more advanced usage, please refer to the examples:
@@ -139,21 +125,6 @@ For more advanced usage, please refer to the examples:
 - **How to get annotations for semantic segmentation?** See [examples/semantic_segmentation](examples/semantic_segmentation).
 - **How to get annotations for instance segmentation?** See [examples/instance_segmentation](examples/instance_segmentation).
 
-## How to build standalone executable
-
-Below shows how to build the standalone executable on macOS, Linux and Windows.  
-
-```bash
-# Setup conda
-conda create --name labelme python==3.6.0
-conda activate labelme
-
-# Build the standalone executable
-pip install .
-pip install pyinstaller
-pyinstaller labelme.spec
-dist/labelme --version
-```
 
 ## Cite This Project
 

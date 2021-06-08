@@ -30,7 +30,7 @@ python setup.py bdist_wininst
 pip install wheel
 python setup.py bdist_wheel
 # load to the release and install with
-# pip install https://github.com/Veronishi/labelText/releases/download/v4.5.8/labelme-4.5.8-py3-none-any.whl
+# pip install https://github.com/Veronishi/labelText/releases/download/v4.6/labeltext-4.6-py3-none-any.whl
 ```
 
 ## Linux Mint 19.3 Cinnamon exception
