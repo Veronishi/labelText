@@ -57,7 +57,7 @@ If you want detailed instructions on how to use Labelme go [here](examples/how_t
 ## Installation
 
 Installation for Windows:  
-[click here to download .exe](https://github.com/Veronishi/labelmePyCharm/releases/download/v4.5.8/labelme-4.5.8.win-amd64.exe)
+[click here to download .exe](https://github.com/Veronishi/labelText/releases/download/v4.5.8/labeltext-4.5.8.win-amd64.exe)
 
 Installation for other OS:  
 
