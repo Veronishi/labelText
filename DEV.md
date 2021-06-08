@@ -32,3 +32,14 @@ python setup.py bdist_wheel
 # load to the release and install with
 # pip install https://github.com/Veronishi/labelText/releases/download/v4.5.8/labelme-4.5.8-py3-none-any.whl
 ```
+
+## Linux Mint 19.3 Cinnamon exception
+This procedure work on linux mint:
+```
+# at list you need python3.7
+python3.8 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+pip install pyqt5
+python setup.py install
+```
