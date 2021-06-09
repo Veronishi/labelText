@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="labelme/icons/icon.png"><br/>labelme
+  LabelText
 </h1>
 
 <h4 align="center">
@@ -7,40 +7,32 @@
 </h4>
 
 <div align="center">
-  <a href="https://pypi.python.org/pypi/labelme"><img src="https://img.shields.io/pypi/v/labelme.svg"></a>
-  <a href="https://pypi.org/project/labelme"><img src="https://img.shields.io/pypi/pyversions/labelme.svg"></a>
-  <a href="https://github.com/wkentaro/labelme/actions"><img src="https://github.com/wkentaro/labelme/workflows/ci/badge.svg?branch=master&event=push"></a>
-  <a href="https://hub.docker.com/r/wkentaro/labelme"><img src="https://img.shields.io/docker/cloud/build/wkentaro/labelme"></a>
+  <a href="https://img.shields.io/badge/python-2.7%20%7C%203.5%20%7C%203.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue"><img src="https://img.shields.io/badge/python-2.7%20%7C%203.5%20%7C%203.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue "></a>
 </div>
 
 <div align="center">
+  <a href="#tutorial"><b>Tutorial</b></a> |
   <a href="#installation"><b>Installation</b></a> |
   <a href="#usage"><b>Usage</b></a> |
-  <a href="https://github.com/wkentaro/labelme/tree/master/examples/tutorial#tutorial-single-image-example"><b>Tutorial</b></a> |
-  <a href="https://github.com/wkentaro/labelme/tree/master/examples"><b>Examples</b></a> |
+  <a href="https://github.com/Veronishi/labelText/tree/master/examples/tutorial#tutorial-single-image-example"><b>Advanced Tutorial</b></a> |
+  <a href="https://github.com/Veronishi/labelText/tree/master/examples"><b>Examples</b></a> |
   <a href="https://www.youtube.com/playlist?list=PLI6LvFw0iflh3o33YYnVIfOpaO0hc5Dzw"><b>Youtube FAQ</b></a>
 </div>
 
 <br/>
 
-<div align="center">
-  <img src="examples/instance_segmentation/.readme/annotation.jpg" width="70%">
-</div>
 
 ## Description
+
+LabelText is an image annotation tool suitable for creation of ground truth for an image dataset for example OCR, segmentation, detection, classification, ...   
+It's a fork of [Labelme](https://github.com/wkentaro/labelme).  
 
 Labelme is a graphical image annotation tool inspired by <http://labelme.csail.mit.edu>.  
 It is written in Python and uses Qt for its graphical interface.
 
-<img src="examples/instance_segmentation/data_dataset_voc/JPEGImages/2011_000006.jpg" width="19%" /> <img src="examples/instance_segmentation/data_dataset_voc/SegmentationClassPNG/2011_000006.png" width="19%" /> <img src="examples/instance_segmentation/data_dataset_voc/SegmentationClassVisualization/2011_000006.jpg" width="19%" /> <img src="examples/instance_segmentation/data_dataset_voc/SegmentationObjectPNG/2011_000006.png" width="19%" /> <img src="examples/instance_segmentation/data_dataset_voc/SegmentationObjectVisualization/2011_000006.jpg" width="19%" />  
-<i>VOC dataset example of instance segmentation.</i>
+## Tutorial
 
-<img src="examples/semantic_segmentation/.readme/annotation.jpg" width="30%" /> <img src="examples/bbox_detection/.readme/annotation.jpg" width="30%" /> <img src="examples/classification/.readme/annotation_cat.jpg" width="35%" />  
-<i>Other examples (semantic segmentation, bbox detection, and classification).</i>
-
-<img src="https://user-images.githubusercontent.com/4310419/47907116-85667800-de82-11e8-83d0-b9f4eb33268f.gif" width="30%" /> <img src="https://user-images.githubusercontent.com/4310419/47922172-57972880-deae-11e8-84f8-e4324a7c856a.gif" width="30%" /> <img src="https://user-images.githubusercontent.com/14256482/46932075-92145f00-d080-11e8-8d09-2162070ae57c.png" width="32%" />  
-<i>Various primitives (polygon, rectangle, circle, line, and point).</i>
-
+If you want detailed instructions on how to use Labelme go [here](examples/how_to_use).
 
 ## Features
 
@@ -50,7 +42,8 @@ It is written in Python and uses Qt for its graphical interface.
 - [x] GUI customization (predefined labels / flags, auto-saving, label validation, etc). ([#144](https://github.com/wkentaro/labelme/pull/144))
 - [x] Exporting VOC-format dataset for semantic/instance segmentation. ([semantic segmentation](examples/semantic_segmentation), [instance segmentation](examples/instance_segmentation))
 - [x] Exporting COCO-format dataset for instance segmentation. ([instance segmentation](examples/instance_segmentation))
-
+- [x] Text auto-detection with Tesseract
+- [x] Save annotations in JSON
 
 
 ## Requirements
@@ -58,122 +51,57 @@ It is written in Python and uses Qt for its graphical interface.
 - Ubuntu / macOS / Windows
 - Python2 / Python3
 - [PyQt4 / PyQt5](http://www.riverbankcomputing.co.uk/software/pyqt/intro)
-
+- [Tesseract](https://pypi.org/project/pytesseract/)
+- [opencv](https://pypi.org/project/opencv-python/)
 
 ## Installation
 
-There are options:
+Installation for Windows:  
+[click here to download .exe](https://github.com/Veronishi/labelText/releases/download/v4.6/labeltext-4.6.win-amd64.exe)
 
-- Platform agnostic installation: [Anaconda](#anaconda), [Docker](#docker)
-- Platform specific installation: [Ubuntu](#ubuntu), [macOS](#macos), [Windows](#windows)
-- Pre-build binaries from [the release section](https://github.com/wkentaro/labelme/releases)
+Installation for other OS:  
 
-If you want to develop follow this [guide](DEV.md). 
-
-### Anaconda
-
-You need install [Anaconda](https://www.continuum.io/downloads), then run below:
-
+1. Install [python](https://www.python.org/downloads/)  
+2. Follow steps for [Conda](#conda) or [Pip](#pip)
+#### Conda
+2. Install [conda](https://docs.conda.io/en/latest/)
+3. If you need create a conda env:
 ```bash
-# python2
-conda create --name=labelme python=2.7
-source activate labelme
-# conda install -c conda-forge pyside2
-conda install pyqt
-pip install labelme
-# if you'd like to use the latest version. run below:
-# pip install git+https://github.com/wkentaro/labelme.git
-
-# python3
-conda create --name=labelme python=3.6
-source activate labelme
-# conda install -c conda-forge pyside2
-# conda install pyqt
-# pip install pyqt5  # pyqt5 can be installed via pip on python3
-pip install labelme
-# or you can install everything by conda command
-# conda install labelme -c conda-forge
+conda create --name myenv
+conda activate myenv
+```
+4.  Install the software:
+```bash
+conda install https://github.com/Veronishi/labelText/releases/download/v4.6/labeltext-4.6-py3-none-any.whl
+```
+5. run with:
+```bash
+labeltext
 ```
 
-### Docker
-
-You need install [docker](https://www.docker.com), then run below:
-
+#### Pip
+2. Install [pip](https://pip.pypa.io/en/stable/installing/)
+3.  Install the software:
 ```bash
-# on macOS
-socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\" &
-docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=docker.for.mac.host.internal:0 -v $(pwd):/root/workdir wkentaro/labelme
-
-# on Linux
-xhost +
-docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=:0 -v $(pwd):/root/workdir wkentaro/labelme
+pip install https://github.com/Veronishi/labelText/releases/download/v4.6/labeltext-4.6-py3-none-any.whl
+```
+4. run with:
+```bash
+labeltext
 ```
 
-### Ubuntu
 
-```bash
-# Ubuntu 14.04 / Ubuntu 16.04
-# Python2
-# sudo apt-get install python-qt4  # PyQt4
-sudo apt-get install python-pyqt5  # PyQt5
-sudo pip install labelme
-# Python3
-sudo apt-get install python3-pyqt5  # PyQt5
-sudo pip3 install labelme
+## Installation for DEV
 
-# or install standalone executable from:
-# https://github.com/wkentaro/labelme/releases
-```
-
-### Ubuntu 19.10+ / Debian (sid)
-
-```bash
-sudo apt-get install labelme
-```
-
-### macOS
-
-```bash
-# macOS Sierra
-brew install pyqt  # maybe pyqt5
-pip install labelme  # both python2/3 should work
-
-# or install standalone executable/app from:
-# https://github.com/wkentaro/labelme/releases
-```
-
-### Windows
-
-Install [Anaconda](https://www.continuum.io/downloads), then in an Anaconda Prompt run:
-
-```bash
-# python3
-conda create --name=labelme python=3.6
-conda activate labelme
-pip install labelme
-```
+Go [here](DEV.md) if you are a developer.
 
 
 ## Usage
 
-Run `labelme --help` for detail.  
 The annotations are saved as a [JSON](http://www.json.org/) file.
 
 ```bash
-labelme  # just open gui
-
-# tutorial (single image example)
-cd examples/tutorial
-labelme apc2016_obj3.jpg  # specify image file
-labelme apc2016_obj3.jpg -O apc2016_obj3.json  # close window after the save
-labelme apc2016_obj3.jpg --nodata  # not include image data but relative image path in JSON file
-labelme apc2016_obj3.jpg \
-  --labels highland_6539_self_stick_notes,mead_index_cards,kong_air_dog_squeakair_tennis_ball  # specify label list
-
-# semantic segmentation example
-cd examples/semantic_segmentation
-labelme data_annotated/  # Open directory to annotate all images in it
-labelme data_annotated/ --labels labels.txt  # specify label list with a file
+labeltext  # just open gui
 ```
 
 For more advanced usage, please refer to the examples:
@@ -198,74 +126,15 @@ For more advanced usage, please refer to the examples:
 - **How to get annotations for instance segmentation?** See [examples/instance_segmentation](examples/instance_segmentation).
 
 
-## Testing
-
-```bash
-pip install hacking pytest pytest-qt
-flake8 .
-pytest -v tests
-```
-
-
-## Developing
-
-```bash
-git clone https://github.com/wkentaro/labelme.git
-cd labelme
-
-# Install anaconda3 and labelme
-curl -L https://github.com/wkentaro/dotfiles/raw/master/local/bin/install_anaconda3.sh | bash -s .
-source .anaconda3/bin/activate
-pip install -e .
-```
-
-
-## How to build standalone executable
-
-Below shows how to build the standalone executable on macOS, Linux and Windows.  
-
-```bash
-# Setup conda
-conda create --name labelme python==3.6.0
-conda activate labelme
-
-# Build the standalone executable
-pip install .
-pip install pyinstaller
-pyinstaller labelme.spec
-dist/labelme --version
-```
-
-
-## How to contribute
-
-Make sure below test passes on your environment.  
-See `.github/workflows/ci.yml` for more detail.
-
-```bash
-pip install black hacking pytest pytest-qt
-
-flake8 .
-black --line-length 79 --check labelme/
-MPLBACKEND='agg' pytest tests/ -m 'not gpu'
-```
-
-
-## Acknowledgement
-
-This repo is the fork of [mpitid/pylabelme](https://github.com/mpitid/pylabelme),
-whose development has already stopped.
-
-
 ## Cite This Project
 
 If you use this project in your research or wish to refer to the baseline results published in the README, please use the following BibTeX entry.
 
 ```bash
-@misc{labelme2016,
-  author =       {Kentaro Wada},
-  title =        {{labelme: Image Polygonal Annotation with Python}},
-  howpublished = {\url{https://github.com/wkentaro/labelme}},
-  year =         {2016}
+@misc{labelText,
+  author =       {Venturino Veronika},
+  title =        {{LabelText : un tool per la creazione di dataset di immagini con groundtruth}},
+  howpublished = {\url{https://link.pdf}},
+  year =         {2021}
 }
 ```
